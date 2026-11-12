@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Professor | AVANÇAR RACE</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .teacher-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .teacher-card {
+      background: white;
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 30px #00000010;
+    }
+
+    .teacher-card h2 {
+      margin-bottom: 20px;
+      color: #168a18;
+    }
+
+    .teacher-card input,
+    .teacher-card textarea {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 12px 0;
+      border: 2px solid #d7e8da;
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    .teacher-card textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .teacher-card button {
+      margin-top: 12px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .room-code {
+      font-size: 50px;
+      font-weight: 900;
+      color: #168a18;
+      letter-spacing: 8px;
+      text-align: center;
+      margin: 25px 0;
+    }
+
+    .teacher-status {
+      padding: 12px;
+      border-radius: 10px;
+      background: #e4f8e4;
+      margin: 15px 0;
+      font-weight: 800;
+    }
+
+    .teacher-error {
+      color: #b42318;
+      margin-top: 12px;
+      font-weight: 700;
+    }
+
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px;
+      border-bottom: 1px solid #e6eee7;
+      gap: 12px;
+    }
+
+    .student-item strong {
+      color: #168a18;
+    }
+
+    .teacher-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-btn {
+      border: 2px solid #168a18;
+      background: white;
+      color: #168a18;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-weight: 900;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="brand">
+      <img src="logo-avancar.png" alt="Instituto Avançar">
+
+      <div>
+        <span>INSTITUTO AVANÇAR</span>
+        <h1>PAINEL <strong>DO PROFESSOR</strong></h1>
+      </div>
+    </div>
+
+    <div class="header-badge">
+      🏆 AVANÇAR RACE
+    </div>
+  </header>
+
+  <main class="teacher-container">
+
+    <!-- LOGIN -->
+
+    <section id="teacherLogin" class="teacher-card">
+      <h2>🔐 Acesso do professor</h2>
+
+      <form id="loginForm">
+        <input
+          id="teacherEmail"
+          type="email"
+          placeholder="E-mail do professor"
+          autocomplete="username"
+          required
+        >
+
+        <input
+          id="teacherPassword"
+          type="password"
+          placeholder="Senha"
+          autocomplete="current-password"
+          required
+        >
+
+        <button class="primary-btn" type="submit">
+          ENTRAR NO PAINEL
+        </button>
+      </form>
+
+      <p id="loginError" class="teacher-error"></p>
+    </section>
+
+    <!-- PAINEL -->
+
+    <section id="teacherDashboard" class="hidden">
+
+      <div class="teacher-card">
+        <h2>🚀 Criar nova corrida</h2>
+
+        <p>
+          Escolha o texto que os alunos deverão digitar.
+          Todos receberão o mesmo conteúdo.
+        </p>
+
+        <textarea id="raceText">O Instituto Avançar acredita que a educação transforma vidas e abre portas para um futuro cheio de oportunidades.</textarea>
+
+        <button
+          id="createRoomBtn"
+          class="primary-btn"
+          type="button"
+        >
+          🏁 CRIAR SALA
+        </button>
+
+        <p id="createError" class="teacher-error"></p>
+      </div>
+
+      <!-- SALA -->
+
+      <div id="roomPanel" class="teacher-card hidden">
+
+        <h2>🏁 Sala de corrida</h2>
+
+        <p>Compartilhe este código com os alunos:</p>
+
+        <div id="roomCode" class="room-code">------</div>
+
+        <div id="roomStatus" class="teacher-status">
+          Aguardando participantes...
+        </div>
+
+        <h3>
+          👥 Alunos conectados:
+          <span id="studentCount">0/12</span>
+        </h3>
+
+        <div id="studentList"></div>
+
+        <div class="teacher-actions">
+          <button
+            id="startRaceBtn"
+            class="primary-btn"
+            type="button"
+            disabled
+          >
+            🚀 INICIAR CORRIDA
+          </button>
+
+          <button
+            id="refreshRoomBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            🔄 ATUALIZAR
+          </button>
+        </div>
+
+        <p id="roomError" class="teacher-error"></p>
+      </div>
+
+      <!-- RANKING -->
+
+      <div id="teacherRanking" class="teacher-card hidden">
+        <h2>🏆 Classificação da corrida</h2>
+        <div id="teacherRankingList"></div>
+      </div>
+
+      <button
+        id="logoutBtn"
+        class="secondary-btn"
+        type="button"
+      >
+        SAIR DO PAINEL
+      </button>
+
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="professor.js"></script>
+
+</body>
+</html>

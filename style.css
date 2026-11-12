@@ -1,0 +1,796 @@
+/* ==========================================
+   AVANÇAR RACE 3.0
+   INSTITUTO AVANÇAR
+========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --green: #2fb923;
+  --green-dark: #168a18;
+  --blue: #1788d5;
+  --dark: #173324;
+  --white: #ffffff;
+  --background: #f2f8f4;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--background);
+  color: var(--dark);
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* HEADER */
+
+.header {
+  min-height: 85px;
+  padding: 12px 5%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 4px solid var(--green);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand img {
+  width: 140px;
+  max-height: 60px;
+  object-fit: contain;
+}
+
+.brand span {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #6d8775;
+}
+
+.brand h1 {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.brand strong {
+  color: var(--green);
+}
+
+.header-badge {
+  background: #e4f8e4;
+  color: var(--green-dark);
+  padding: 12px 20px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* TELAS */
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* HOME */
+
+.hero {
+  min-height: calc(100vh - 85px);
+  padding: 45px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background:
+    radial-gradient(
+      circle at center,
+      #d6f5d7,
+      transparent 65%
+    ),
+    #f4faf5;
+}
+
+.hero-label,
+.section-label {
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.hero h2 {
+  font-size: clamp(38px, 6vw, 85px);
+  font-weight: 900;
+  line-height: 1.1;
+  margin: 25px 0;
+}
+
+.hero h2 span {
+  color: var(--green);
+}
+
+.hero p {
+  font-size: 19px;
+  color: #6b8170;
+  max-width: 550px;
+}
+
+.hero-animals {
+  font-size: clamp(35px, 6vw, 75px);
+  margin: 35px 0;
+  animation: bounce 1.5s infinite alternate;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-12px);
+  }
+}
+
+/* BOTÕES */
+
+.primary-btn {
+  border: none;
+  border-radius: 15px;
+  padding: 19px 38px;
+  background: var(--green);
+  color: white;
+  font-weight: 900;
+  font-size: 17px;
+  box-shadow: 0 7px 0 var(--green-dark);
+  transition: 0.2s;
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+}
+
+.primary-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 3px 0 var(--green-dark);
+}
+
+/* CONFIGURAÇÃO */
+
+.setup-card {
+  max-width: 1000px;
+  margin: 35px auto;
+  padding: 35px;
+  background: white;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 15px 45px #14351b12;
+}
+
+.setup-card h2 {
+  font-size: 35px;
+  margin: 15px 0;
+}
+
+.setup-card p {
+  color: #748777;
+}
+
+.setup-card input {
+  display: block;
+  width: 100%;
+  max-width: 500px;
+  margin: 25px auto;
+  padding: 18px;
+  border: 2px solid #d7e8da;
+  border-radius: 12px;
+  font-size: 18px;
+  outline: none;
+}
+
+.setup-card input:focus {
+  border-color: var(--green);
+}
+
+.setup-card h3 {
+  margin: 25px 0;
+  font-size: 15px;
+}
+
+/* SELEÇÃO DE ANIMAIS */
+
+.characters {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 35px;
+}
+
+.character {
+  min-width: 0;
+  border: 3px solid transparent;
+  border-radius: 18px;
+  background: #eef7ef;
+  padding: 12px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
+}
+
+.character:hover {
+  transform: translateY(-5px);
+  background: #e2f5e3;
+}
+
+.character.selected {
+  background: #d7f8d5;
+  border-color: var(--green);
+}
+
+.character small {
+  font-size: 12px;
+  font-weight: 900;
+  color: #25472b;
+}
+
+/* SISTEMA DE SPRITES */
+
+.animal-sprite {
+  display: block;
+  flex-shrink: 0;
+  background-repeat: no-repeat;
+  background-size: 400% 200%;
+  background-position: 0% 0%;
+}
+
+.character-preview {
+  width: 88px;
+  height: 58px;
+  max-width: 100%;
+}
+
+/* CABEÇALHO DO JOGO */
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 4%;
+}
+
+.game-header h2 {
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.game-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.game-stats > div {
+  background: white;
+  padding: 8px 15px;
+  border-radius: 12px;
+  text-align: center;
+  min-width: 85px;
+}
+
+.game-stats span {
+  display: block;
+  font-size: 10px;
+  font-weight: 900;
+  color: #849588;
+}
+
+.game-stats strong {
+  display: block;
+  font-size: 20px;
+  color: var(--green-dark);
+}
+
+/* CENÁRIO */
+
+.race-world {
+  position: relative;
+  margin: 0 4%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #c9efd0;
+  border: 3px solid #a6d9ac;
+}
+
+.scenery-top {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(#a8e7ff, #c9efd0);
+  font-size: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* OUTDOORS */
+
+.billboards {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 10px;
+  padding: 7px;
+  background: #a7db9d;
+}
+
+.billboard {
+  min-height: 42px;
+  padding: 4px 12px;
+  border: 2px solid white;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 0 #69a96b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.billboard img {
+  width: 105px;
+  max-height: 35px;
+  object-fit: contain;
+}
+
+.text-board {
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* PISTA */
+
+.track-container {
+  overflow: hidden;
+  padding: 6px;
+  background: #a7db9d;
+}
+
+.track-perspective {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px #294d3040;
+}
+
+.track {
+  position: relative;
+  background: #e7edef;
+  border-left: 8px solid white;
+  border-right: 8px solid white;
+}
+
+.lane {
+  height: 48px;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 2px solid white;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      transparent 24%,
+      #ffffff70 24.2%,
+      transparent 24.5%,
+      transparent 49%,
+      #ffffff70 49.2%,
+      transparent 49.5%,
+      transparent 74%,
+      #ffffff70 74.2%,
+      transparent 74.5%
+    ),
+    #e8eef0;
+}
+
+.lane:nth-child(even) {
+  background-color: #dce6e8;
+}
+
+.lane.player-lane {
+  background-color: #d7f5d4;
+}
+
+.lane:last-child {
+  border-bottom: none;
+}
+
+/* LINHA DE CHEGADA */
+
+.lane::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 0;
+  height: 100%;
+  width: 15px;
+
+  background: repeating-conic-gradient(
+    #ffffff 0% 25%,
+    #333333 0% 50%
+  ) 0 0 / 15px 15px;
+}
+
+/* ANIMAIS NA PISTA */
+
+.runner {
+  position: absolute;
+  top: 0;
+  left: 180px;
+  z-index: 2;
+
+  width: 72px;
+  height: 48px;
+
+  font-size: 0;
+  line-height: normal;
+
+  transition: left 0.15s linear;
+
+  filter: drop-shadow(0 3px 2px #00000025);
+}
+
+/* ANIMAÇÃO DAS PATAS */
+
+.runner.running {
+  animation: spriteRun 0.64s steps(1) infinite;
+}
+
+@keyframes spriteRun {
+
+  0% {
+    background-position: 0% 0%;
+  }
+
+  12.5% {
+    background-position: 33.333% 0%;
+  }
+
+  25% {
+    background-position: 66.667% 0%;
+  }
+
+  37.5% {
+    background-position: 100% 0%;
+  }
+
+  50% {
+    background-position: 0% 100%;
+  }
+
+  62.5% {
+    background-position: 33.333% 100%;
+  }
+
+  75% {
+    background-position: 66.667% 100%;
+  }
+
+  87.5% {
+    background-position: 100% 100%;
+  }
+
+}
+
+/* IMAGEM AUSENTE */
+
+.sprite-missing {
+  background-image: none !important;
+  font-size: 32px;
+  line-height: 45px;
+}
+
+/* NOMES DOS COMPETIDORES */
+
+.runner-label {
+  position: absolute;
+  left: 12px;
+  top: 16px;
+  font-size: 11px;
+  font-weight: 900;
+  color: #31543a;
+  white-space: nowrap;
+  pointer-events: none;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* DECORAÇÃO INFERIOR */
+
+.scenery-bottom {
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #8bd28b;
+  font-size: 18px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* ÁREA DE DIGITAÇÃO */
+
+.typing-card {
+  margin: 12px 4%;
+  padding: 16px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px #0000000b;
+}
+
+.typing-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--green-dark);
+  letter-spacing: 1px;
+}
+
+.text-display {
+  min-height: 65px;
+  padding: 12px;
+  background: #f5f8f6;
+  border-radius: 12px;
+  font-size: 19px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  overflow-wrap: anywhere;
+  font-weight: 700;
+}
+
+.text-display span.correct {
+  color: #24ae32;
+  background: #ddf8df;
+}
+
+.text-display span.incorrect {
+  color: #e53b3b;
+  background: #ffe2e2;
+}
+
+.text-display span.current {
+  border-bottom: 3px solid var(--blue);
+}
+
+.typing-card textarea {
+  width: 100%;
+  height: 65px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 2px solid #d9e7dc;
+  border-radius: 12px;
+  outline: none;
+  resize: none;
+  font-size: 17px;
+}
+
+.typing-card textarea:focus {
+  border-color: var(--green);
+}
+
+.typing-footer {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  color: #52705a;
+  font-size: 13px;
+}
+
+/* RANKING */
+
+.ranking-card {
+  margin: 20px 4% 50px;
+  padding: 25px;
+  background: white;
+  border-radius: 20px;
+}
+
+.ranking-card h3 {
+  margin-bottom: 15px;
+}
+
+.rank-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px;
+  border-bottom: 1px solid #e6eee7;
+}
+
+.rank-item strong {
+  color: var(--green-dark);
+}
+
+.ranking-note {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #748777;
+}
+
+/* CONTAGEM REGRESSIVA */
+
+.countdown {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: #07250eef;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.countdown.hidden {
+  display: none;
+}
+
+.countdown img {
+  width: 230px;
+  max-width: 70vw;
+  margin-bottom: 30px;
+}
+
+#countdownNumber {
+  font-size: clamp(100px, 25vw, 230px);
+  font-weight: 900;
+  color: #45e51f;
+  text-shadow: 0 0 50px #37ff00;
+  animation: countdownPulse 0.8s infinite;
+}
+
+@keyframes countdownPulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.countdown h2 {
+  font-size: 20px;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+/* RESULTADO */
+
+.result-card {
+  max-width: 700px;
+  margin: 70px auto;
+  padding: 60px 30px;
+  background: white;
+  border-radius: 25px;
+  text-align: center;
+}
+
+.trophy {
+  font-size: 100px;
+}
+
+.result-card h2 {
+  font-size: 35px;
+  margin: 20px 0;
+}
+
+#winner {
+  font-size: 23px;
+  margin: 30px 0;
+  color: var(--green-dark);
+  font-weight: 900;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 800px) {
+
+  .header {
+    flex-wrap: wrap;
+  }
+
+  .header-badge {
+    display: none;
+  }
+
+  .characters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .game-header {
+    flex-direction: column;
+  }
+
+  .game-stats {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .billboards {
+    flex-wrap: nowrap;
+  }
+
+  .text-board {
+    font-size: 8px;
+  }
+
+  .text-display {
+    font-size: 17px;
+  }
+
+  .typing-card {
+    padding: 12px;
+  }
+
+  .runner-label {
+    font-size: 9px;
+    max-width: 90px;
+  }
+
+  .runner {
+    width: 56px;
+    height: 38px;
+    top: 5px;
+  }
+
+  .character-preview {
+    width: 75px;
+    height: 50px;
+  }
+
+  .setup-card {
+    margin: 20px;
+    padding: 25px;
+  }
+
+}
+
+/* ACESSIBILIDADE */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+
+}

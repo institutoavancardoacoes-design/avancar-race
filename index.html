@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>AVANÇAR RACE | Instituto Avançar</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .room-input {
+      display: block;
+      width: 100%;
+      max-width: 380px;
+      margin: 12px auto;
+      padding: 14px;
+      border: 2px solid #b6ddba;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .waiting-box {
+      max-width: 800px;
+      margin: 35px auto;
+      padding: 35px;
+      background: white;
+      border-radius: 22px;
+      text-align: center;
+      box-shadow: 0 10px 35px #0001;
+    }
+
+    .waiting-code {
+      font-size: 42px;
+      font-weight: 900;
+      color: #168a18;
+      letter-spacing: 7px;
+    }
+
+    .waiting-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .waiting-person {
+      padding: 12px;
+      border-radius: 12px;
+      background: #edf9ee;
+      font-weight: 800;
+    }
+
+    .game-message {
+      color: #146c25;
+      font-weight: 800;
+      text-align: center;
+      margin: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <div class="brand">
+      <img src="logo-avancar.png" alt="Instituto Avançar">
+
+      <div>
+        <span>INSTITUTO AVANÇAR APRESENTA</span>
+        <h1>AVANÇAR <strong>RACE</strong></h1>
+      </div>
+    </div>
+
+    <div class="header-badge">
+      🏆 CAMPEONATO DE DIGITAÇÃO
+    </div>
+  </header>
+
+  <main>
+
+    <!-- TELA INICIAL -->
+
+    <section id="home" class="screen active">
+      <div class="hero">
+
+        <div class="hero-label">
+          🚀 APRENDA • DIGITE • ACELERE
+        </div>
+
+        <h2>
+          SUA VELOCIDADE<br>
+          <span>FAZ A DIFERENÇA!</span>
+        </h2>
+
+        <p>
+          Escolha seu animal, prepare seus dedos
+          e dispute uma corrida cheia de diversão!
+        </p>
+
+        <div class="hero-animals">
+          🦁 🐯 🐰 🦊 🐼 🐻
+        </div>
+
+        <button
+          class="primary-btn"
+          onclick="showScreen('setup')"
+        >
+          🏁 COMEÇAR A JOGAR
+        </button>
+
+      </div>
+    </section>
+
+    <!-- ENTRADA DOS ALUNOS -->
+
+    <section id="setup" class="screen">
+      <div class="setup-card">
+
+        <div class="section-label">
+          PREPARE-SE PARA A CORRIDA
+        </div>
+
+        <h2>Escolha seu competidor!</h2>
+
+        <p>
+          Peça ao professor o código da sala.
+          Digite seu nome e escolha um animal disponível.
+        </p>
+
+        <input
+          id="roomCodeInput"
+          class="room-input"
+          placeholder="CÓDIGO DA SALA"
+          maxlength="6"
+          autocomplete="off"
+          aria-label="Código da sala"
+        >
+
+        <input
+          id="playerName"
+          type="text"
+          placeholder="Digite seu nome"
+          maxlength="20"
+          autocomplete="off"
+        >
+
+        <h3>ESCOLHA SEU ANIMAL</h3>
+
+        <div id="characters" class="characters"></div>
+
+        <button
+          id="joinBtn"
+          class="primary-btn"
+          onclick="startGame()"
+        >
+          🚀 ENTRAR NA SALA
+        </button>
+
+        <p
+          id="setupMessage"
+          class="game-message"
+          role="status"
+        ></p>
+
+      </div>
+    </section>
+
+    <!-- SALA DE ESPERA -->
+
+    <section id="waiting" class="screen">
+      <div class="waiting-box">
+
+        <div class="section-label">
+          SALA DE ESPERA
+        </div>
+
+        <h2>⏳ AGUARDANDO O PROFESSOR</h2>
+
+        <p>Código da corrida:</p>
+
+        <div id="waitingCode" class="waiting-code">
+          ------
+        </div>
+
+        <p id="waitingStatus" class="game-message">
+          Aguardando a largada...
+        </p>
+
+        <h3>
+          👥 Participantes
+          <span id="waitingCount">0/12</span>
+        </h3>
+
+        <div id="waitingPlayers" class="waiting-list"></div>
+
+        <p>
+          Não feche esta página.
+          O professor iniciará a corrida para todos.
+        </p>
+
+      </div>
+    </section>
+
+    <!-- CORRIDA -->
+
+    <section id="race" class="screen">
+
+      <div class="game-header">
+
+        <div>
+          <span class="section-label">
+            CORRIDA EM ANDAMENTO
+          </span>
+
+          <h2>🏁 AVANÇAR RACE</h2>
+        </div>
+
+        <div class="game-stats">
+
+          <div>
+            <span>TEMPO</span>
+            <strong id="timer">00:00</strong>
+          </div>
+
+          <div>
+            <span>PROGRESSO</span>
+            <strong id="progress">0%</strong>
+          </div>
+
+          <div>
+            <span>PRECISÃO</span>
+            <strong id="accuracy">100%</strong>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- CENÁRIO -->
+
+      <div class="race-world">
+
+        <div class="scenery-top">
+          <span>🌳 🌿 🌴 🌳 🌿 🌴 🌳 🌿 🌴</span>
+        </div>
+
+        <div class="billboards">
+
+          <div class="billboard">
+            <img
+              src="logo-avancar.png"
+              alt="Instituto Avançar"
+            >
+          </div>
+
+          <div class="billboard text-board">
+            🚀 FORTALECENDO TALENTOS
+          </div>
+
+          <div class="billboard text-board">
+            🏆 CONSTRUINDO LEGADOS
+          </div>
+
+        </div>
+
+        <div class="track-container">
+          <div class="track-perspective">
+            <div id="track" class="track"></div>
+          </div>
+        </div>
+
+        <div class="scenery-bottom">
+          🌿 🌳 🌱 🌴 🌿 🌳 🌱 🌴 🌿
+        </div>
+
+      </div>
+
+      <!-- DIGITAÇÃO -->
+
+      <div class="typing-card">
+
+        <div class="typing-top">
+
+          <span>
+            ⌨️ DIGITE O TEXTO PARA CORRER
+          </span>
+
+          <strong id="typingStatus">
+            AGUARDANDO LARGADA
+          </strong>
+
+        </div>
+
+        <div
+          id="textDisplay"
+          class="text-display"
+        ></div>
+
+        <textarea
+          id="typingInput"
+          placeholder="Comece a digitar aqui..."
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+          disabled
+        ></textarea>
+
+        <div class="typing-footer">
+
+          <div>
+            ⚡ <strong id="speed">0</strong> PPM
+          </div>
+
+          <div>
+            ✅ <strong id="correctChars">0</strong> caracteres
+          </div>
+
+          <div>
+            🎯 <strong id="errors">0</strong> erros
+          </div>
+
+        </div>
+
+        <p id="raceMessage" class="game-message"></p>
+
+      </div>
+
+      <!-- RANKING -->
+
+      <div class="ranking-card">
+
+        <h3>🏆 CLASSIFICAÇÃO</h3>
+
+        <div id="ranking"></div>
+
+      </div>
+
+    </section>
+
+    <!-- RESULTADO -->
+
+    <section id="result" class="screen">
+
+      <div class="result-card">
+
+        <div class="trophy">🏆</div>
+
+        <h2>CORRIDA FINALIZADA!</h2>
+
+        <div id="winner"></div>
+
+        <button
+          class="primary-btn"
+          onclick="location.reload()"
+        >
+          🔄 JOGAR NOVAMENTE
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- CONTAGEM REGRESSIVA -->
+
+  <div id="countdown" class="countdown hidden">
+
+    <img
+      src="logo-avancar.png"
+      alt="Instituto Avançar"
+    >
+
+    <div id="countdownNumber">3</div>
+
+    <h2>PREPARE-SE PARA AVANÇAR! 🚀</h2>
+
+  </div>
+
+  <!-- SUPABASE -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
+  <script src="supabase-config.js"></script>
+
+  <!-- JOGO -->
+
+  <script src="script.js"></script>
+
+</body>
+</html>
