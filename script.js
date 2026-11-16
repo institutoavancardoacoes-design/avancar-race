@@ -1406,3 +1406,321 @@ loadCharacters();
 console.log(
   "AVANÇAR RACE 4.1 — Multiplayer corrigido!"
 );
+// ==========================================
+// AVANÇAR RACE 4.2
+// SISTEMA DE HABILIDADES ESPECIAIS
+// INSTITUTO AVANÇAR
+// ==========================================
+
+// HABILIDADES DOS 12 ANIMAIS
+
+const habilidadesAnimais = {
+  "Leão": {
+    nome: "RUGIDO DO REI",
+    efeito: "🦁🔊",
+    classe: "habilidade-leao"
+  },
+
+  "Tigre": {
+    nome: "TURBO ELÉTRICO",
+    efeito: "⚡⚡",
+    classe: "habilidade-tigre"
+  },
+
+  "Coelho": {
+    nome: "SUPER SALTO",
+    efeito: "✨🐰",
+    classe: "habilidade-coelho"
+  },
+
+  "Raposa": {
+    nome: "VELOCIDADE FANTASMA",
+    efeito: "💨💨",
+    classe: "habilidade-raposa"
+  },
+
+  "Panda": {
+    nome: "CAMBALHOTA",
+    efeito: "🌟🐼",
+    classe: "habilidade-panda"
+  },
+
+  "Tartaruga": {
+    nome: "GIRO DO CASCO",
+    efeito: "🌀🐢",
+    classe: "habilidade-tartaruga"
+  },
+
+  "Macaco": {
+    nome: "SALTO ACROBÁTICO",
+    efeito: "🙈✨",
+    classe: "habilidade-macaco"
+  },
+
+  "Lobo": {
+    nome: "UIVO SELVAGEM",
+    efeito: "🌙🐺",
+    classe: "habilidade-lobo"
+  },
+
+  "Urso": {
+    nome: "IMPACTO PODEROSO",
+    efeito: "💥🐻",
+    classe: "habilidade-urso"
+  },
+
+  "T-Rex": {
+    nome: "RUGIDO JURÁSSICO",
+    efeito: "🦖💥",
+    classe: "habilidade-trex"
+  },
+
+  "Dragão": {
+    nome: "FOGO DO DRAGÃO",
+    efeito: "🔥🔥🔥",
+    classe: "habilidade-dragao"
+  },
+
+  "Rinoceronte": {
+    nome: "ARRANCADA SELVAGEM",
+    efeito: "💨🦏",
+    classe: "habilidade-rinoceronte"
+  }
+};
+
+
+// ==========================================
+// CONFIGURAÇÕES
+// ==========================================
+
+let ultimoLiderHabilidade = null;
+let ultimaAtivacaoHabilidade = 0;
+let temporizadorHabilidade = null;
+
+const TEMPO_HABILIDADE = 1900;
+const INTERVALO_HABILIDADE = 6500;
+
+const classesHabilidades = Object.values(
+  habilidadesAnimais
+).map(habilidade => habilidade.classe);
+
+
+// ==========================================
+// REMOVER HABILIDADE ANTERIOR
+// ==========================================
+
+function removerHabilidades() {
+
+  document.querySelectorAll(".runner").forEach(runner => {
+
+    runner.classList.remove(
+      "habilidade-ativa",
+      ...classesHabilidades
+    );
+
+    runner.querySelectorAll(
+      ".efeito-habilidade"
+    ).forEach(efeito => efeito.remove());
+
+  });
+
+  if (temporizadorHabilidade) {
+    clearTimeout(temporizadorHabilidade);
+    temporizadorHabilidade = null;
+  }
+
+}
+
+
+// ==========================================
+// ATIVAR HABILIDADE
+// ==========================================
+
+function ativarHabilidade(jogador) {
+
+  const habilidade = habilidadesAnimais[jogador.animal];
+
+  if (!habilidade) return;
+
+  const indice = animals.findIndex(
+    animal => animal.name === jogador.animal
+  );
+
+  if (indice === -1) return;
+
+  const corredor = document.getElementById(
+    `runner-${indice}`
+  );
+
+  if (!corredor) return;
+
+  removerHabilidades();
+
+  corredor.classList.add(
+    "habilidade-ativa",
+    habilidade.classe
+  );
+
+  // EFEITO VISUAL
+
+  const efeito = document.createElement("span");
+
+  efeito.className = "efeito-habilidade";
+
+  efeito.textContent = habilidade.efeito;
+
+  efeito.setAttribute("aria-hidden", "true");
+
+  corredor.appendChild(efeito);
+
+  // NOME DA HABILIDADE
+
+  const mensagem = document.createElement("span");
+
+  mensagem.className = "efeito-habilidade nome-habilidade";
+
+  mensagem.textContent = habilidade.nome;
+
+  mensagem.setAttribute("aria-hidden", "true");
+
+  corredor.appendChild(mensagem);
+
+  // REMOVER EFEITO AUTOMATICAMENTE
+
+  temporizadorHabilidade = setTimeout(() => {
+
+    removerHabilidades();
+
+  }, TEMPO_HABILIDADE);
+
+}
+
+
+// ==========================================
+// IDENTIFICAR O LÍDER
+// ==========================================
+
+function verificarLiderHabilidade() {
+
+  if (!raceStarted || !raceActive) return;
+
+  if (
+    !document.getElementById("race")
+      ?.classList.contains("active")
+  ) return;
+
+  if (roomStatus === "finalizada") return;
+
+  const participantes = players.map(jogador => {
+
+    let progresso = Number(jogador.progresso) || 0;
+
+    // Considerar o progresso local do aluno
+    // enquanto aguarda a sincronização.
+
+    if (jogador.id === playerId) {
+
+      progresso = Math.max(
+        progresso,
+        calculateProgress()
+      );
+
+    }
+
+    return {
+      ...jogador,
+      progressoAtual: progresso
+    };
+
+  });
+
+  participantes.sort(
+    (a, b) => b.progressoAtual - a.progressoAtual
+  );
+
+  if (!participantes.length) return;
+
+  const lider = participantes[0];
+
+  if (lider.progressoAtual <= 0) return;
+
+  // Não ativar habilidade durante empate.
+
+  if (
+    participantes.length > 1 &&
+    participantes[1].progressoAtual ===
+    lider.progressoAtual
+  ) return;
+
+  const agora = Date.now();
+
+  const mudouLider =
+    ultimoLiderHabilidade !== lider.id;
+
+  if (
+    !mudouLider &&
+    agora - ultimaAtivacaoHabilidade <
+    INTERVALO_HABILIDADE
+  ) return;
+
+  ultimoLiderHabilidade = lider.id;
+
+  ultimaAtivacaoHabilidade = agora;
+
+  ativarHabilidade(lider);
+
+}
+
+
+// ==========================================
+// INTEGRAR AO SISTEMA EXISTENTE
+// ==========================================
+
+// Quando o Supabase atualizar os corredores,
+// verificar novamente quem está liderando.
+
+const atualizarCorredoresOriginal = updateAllRunners;
+
+updateAllRunners = function (...args) {
+
+  const resultado = atualizarCorredoresOriginal(...args);
+
+  verificarLiderHabilidade();
+
+  return resultado;
+
+};
+
+
+// Quando o próprio aluno digitar,
+// verificar a liderança imediatamente.
+
+const atualizarEstatisticasOriginal = updateStats;
+
+updateStats = function (...args) {
+
+  const resultado = atualizarEstatisticasOriginal(...args);
+
+  verificarLiderHabilidade();
+
+  return resultado;
+
+};
+
+
+// Limpar efeitos quando a corrida terminar.
+
+const mostrarResultadosOriginal = showFinalResults;
+
+showFinalResults = function (...args) {
+
+  removerHabilidades();
+
+  return mostrarResultadosOriginal(...args);
+
+};
+
+
+console.log(
+  "AVANÇAR RACE 4.2 — Habilidades especiais carregadas!"
+);

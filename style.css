@@ -794,3 +794,239 @@ button {
   }
 
 }
+/* ==========================================
+   AVANÇAR RACE 4.2
+   HABILIDADES ESPECIAIS
+========================================== */
+
+
+/* CORREDOR COM HABILIDADE */
+
+.runner.habilidade-ativa {
+  z-index: 20;
+  overflow: visible;
+}
+
+
+/* EFEITOS VISUAIS */
+
+.efeito-habilidade {
+  position: absolute;
+
+  left: 75%;
+  top: -8px;
+
+  font-size: 24px;
+
+  white-space: nowrap;
+
+  pointer-events: none;
+
+  z-index: 30;
+
+  animation: explosaoHabilidade 1.9s ease-out forwards;
+}
+
+
+/* NOME DA HABILIDADE */
+
+.nome-habilidade {
+  top: -19px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 9px;
+  font-weight: 900;
+
+  color: white;
+
+  background: #173324;
+
+  padding: 3px 7px;
+
+  border-radius: 7px;
+
+  animation: nomeHabilidade 1.9s ease-out forwards;
+}
+
+
+/* EXPLOSÃO DE PARTÍCULAS */
+
+@keyframes explosaoHabilidade {
+
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.3);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(8px, -8px) scale(1.2);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate(30px, -5px) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(65px, -15px) scale(0.5);
+  }
+
+}
+
+
+/* ANIMAÇÃO DO NOME */
+
+@keyframes nomeHabilidade {
+
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -4px);
+  }
+
+  75% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -14px);
+  }
+
+}
+
+
+/* ==========================================
+   DRAGÃO — FOGO
+========================================== */
+
+.runner.habilidade-dragao {
+  filter:
+    drop-shadow(0 0 8px orange)
+    drop-shadow(0 0 5px red);
+}
+
+.habilidade-dragao .efeito-habilidade:not(.nome-habilidade) {
+  font-size: 28px;
+  text-shadow: 0 0 12px orange;
+}
+
+
+/* ==========================================
+   TIGRE — ELETRICIDADE
+========================================== */
+
+.runner.habilidade-tigre {
+  filter:
+    drop-shadow(0 0 8px yellow)
+    drop-shadow(0 0 5px #00bfff);
+}
+
+
+/* ==========================================
+   LEÃO — RUGIDO
+========================================== */
+
+.runner.habilidade-leao {
+  filter: drop-shadow(0 0 10px gold);
+}
+
+
+/* ==========================================
+   COELHO — SUPER SALTO
+========================================== */
+
+.runner.habilidade-coelho {
+  filter: drop-shadow(0 0 8px #ffffff);
+}
+
+
+/* ==========================================
+   RAPOSA — VELOCIDADE
+========================================== */
+
+.runner.habilidade-raposa {
+  filter: drop-shadow(0 0 8px orange);
+}
+
+
+/* ==========================================
+   PANDA — CAMBALHOTA
+========================================== */
+
+.runner.habilidade-panda {
+  filter: drop-shadow(0 0 8px #c084fc);
+}
+
+
+/* ==========================================
+   TARTARUGA — CASCO
+========================================== */
+
+.runner.habilidade-tartaruga {
+  filter: drop-shadow(0 0 8px limegreen);
+}
+
+
+/* ==========================================
+   MACACO — ACROBACIA
+========================================== */
+
+.runner.habilidade-macaco {
+  filter: drop-shadow(0 0 8px #ffb347);
+}
+
+
+/* ==========================================
+   LOBO — UIVO
+========================================== */
+
+.runner.habilidade-lobo {
+  filter: drop-shadow(0 0 8px #a5b4fc);
+}
+
+
+/* ==========================================
+   URSO — IMPACTO
+========================================== */
+
+.runner.habilidade-urso {
+  filter: drop-shadow(0 0 8px #b45309);
+}
+
+
+/* ==========================================
+   T-REX — RUGIDO
+========================================== */
+
+.runner.habilidade-trex {
+  filter: drop-shadow(0 0 8px #22c55e);
+}
+
+
+/* ==========================================
+   RINOCERONTE — ARRANCADA
+========================================== */
+
+.runner.habilidade-rinoceronte {
+  filter: drop-shadow(0 0 8px #94a3b8);
+}
+
+
+/* ACESSIBILIDADE */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .efeito-habilidade {
+    animation: none !important;
+  }
+
+}

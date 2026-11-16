@@ -3,27 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Painel do Professor | AVANÇAR RACE</title>
+
   <link rel="stylesheet" href="style.css">
 
   <style>
+    :root {
+      --teacher-green: #168a18;
+      --teacher-light: #eaf8eb;
+      --teacher-dark: #173324;
+    }
+
     .teacher-container {
       max-width: 1100px;
-      margin: 40px auto;
+      margin: 35px auto;
       padding: 20px;
     }
 
     .teacher-card {
       background: white;
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 30px;
       margin-bottom: 25px;
-      box-shadow: 0 10px 30px #00000010;
+      box-shadow: 0 10px 35px #00000010;
     }
 
     .teacher-card h2 {
-      margin-bottom: 20px;
-      color: #168a18;
+      margin-bottom: 18px;
+      color: var(--teacher-green);
+    }
+
+    .teacher-card p {
+      color: #607565;
+      line-height: 1.6;
     }
 
     .teacher-card input,
@@ -35,10 +48,16 @@
       border: 2px solid #d7e8da;
       border-radius: 12px;
       font-size: 16px;
+      outline: none;
+    }
+
+    .teacher-card input:focus,
+    .teacher-card textarea:focus {
+      border-color: var(--teacher-green);
     }
 
     .teacher-card textarea {
-      min-height: 130px;
+      min-height: 140px;
       resize: vertical;
     }
 
@@ -51,30 +70,39 @@
     }
 
     .room-code {
-      font-size: 50px;
+      font-size: clamp(32px, 7vw, 56px);
       font-weight: 900;
-      color: #168a18;
-      letter-spacing: 8px;
+      color: var(--teacher-green);
+      letter-spacing: 7px;
       text-align: center;
       margin: 25px 0;
+      overflow-wrap: anywhere;
     }
 
     .teacher-status {
-      padding: 12px;
-      border-radius: 10px;
-      background: #e4f8e4;
+      padding: 15px;
+      border-radius: 12px;
+      background: var(--teacher-light);
+      color: var(--teacher-green);
       margin: 15px 0;
       font-weight: 800;
     }
 
     .teacher-error {
-      color: #b42318;
+      color: #b42318 !important;
       margin-top: 12px;
       font-weight: 700;
     }
 
+    .teacher-success {
+      color: var(--teacher-green) !important;
+      margin-top: 12px;
+      font-weight: 800;
+    }
+
     .student-item {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       padding: 15px;
       border-bottom: 1px solid #e6eee7;
@@ -82,22 +110,114 @@
     }
 
     .student-item strong {
-      color: #168a18;
+      color: var(--teacher-green);
+      white-space: nowrap;
     }
 
     .teacher-actions {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     .secondary-btn {
-      border: 2px solid #168a18;
+      border: 2px solid var(--teacher-green);
       background: white;
-      color: #168a18;
+      color: var(--teacher-green);
       padding: 15px 25px;
       border-radius: 12px;
       font-weight: 900;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      background: var(--teacher-light);
+    }
+
+    .teacher-actions button:disabled,
+    .teacher-card button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .teacher-info {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(180px, 1fr)
+      );
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .teacher-info-card {
+      background: #f2faf3;
+      border: 1px solid #d8efdb;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .teacher-info-card span {
+      display: block;
+      font-size: 12px;
+      color: #66836b;
+      font-weight: 800;
+    }
+
+    .teacher-info-card strong {
+      display: block;
+      font-size: 27px;
+      color: var(--teacher-green);
+      margin-top: 8px;
+    }
+
+    .teacher-link {
+      background: #f5faf6;
+      border: 1px solid #d8efdb;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 15px 0;
+      overflow-wrap: anywhere;
+      font-weight: 800;
+      color: var(--teacher-dark);
+    }
+
+    .teacher-subtitle {
+      margin: 20px 0 12px;
+      color: var(--teacher-dark);
+    }
+
+    .teacher-footer {
+      text-align: center;
+      padding: 25px;
+      color: #708576;
+      font-size: 13px;
+    }
+
+    @media (max-width: 600px) {
+      .teacher-container {
+        padding: 12px;
+        margin: 15px auto;
+      }
+
+      .teacher-card {
+        padding: 20px;
+      }
+
+      .teacher-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .teacher-actions button {
+        width: 100%;
+      }
+
+      .student-item {
+        font-size: 13px;
+      }
     }
   </style>
 </head>
@@ -105,28 +225,47 @@
 <body>
 
   <header class="header">
+
     <div class="brand">
-      <img src="logo-avancar.png" alt="Instituto Avançar">
+
+      <img
+        src="logo-avancar.png"
+        alt="Instituto Avançar"
+      >
 
       <div>
         <span>INSTITUTO AVANÇAR</span>
-        <h1>PAINEL <strong>DO PROFESSOR</strong></h1>
+        <h1>
+          PAINEL <strong>DO PROFESSOR</strong>
+        </h1>
       </div>
+
     </div>
 
     <div class="header-badge">
       🏆 AVANÇAR RACE
     </div>
+
   </header>
 
   <main class="teacher-container">
 
     <!-- LOGIN -->
 
-    <section id="teacherLogin" class="teacher-card">
+    <section
+      id="teacherLogin"
+      class="teacher-card"
+    >
+
       <h2>🔐 Acesso do professor</h2>
 
+      <p>
+        Entre com sua conta autorizada
+        para administrar as corridas.
+      </p>
+
       <form id="loginForm">
+
         <input
           id="teacherEmail"
           type="email"
@@ -143,54 +282,152 @@
           required
         >
 
-        <button class="primary-btn" type="submit">
+        <button
+          id="loginBtn"
+          class="primary-btn"
+          type="submit"
+        >
           ENTRAR NO PAINEL
         </button>
+
       </form>
 
-      <p id="loginError" class="teacher-error"></p>
+      <p
+        id="loginError"
+        class="teacher-error"
+        role="alert"
+      ></p>
+
     </section>
 
-    <!-- PAINEL -->
+    <!-- DASHBOARD -->
 
-    <section id="teacherDashboard" class="hidden">
+    <section
+      id="teacherDashboard"
+      class="hidden"
+    >
 
       <div class="teacher-card">
+
+        <h2>👨‍🏫 Central do Professor</h2>
+
+        <p>
+          Bem-vindo ao sistema de corridas
+          educativas do Instituto Avançar.
+        </p>
+
+        <div class="teacher-info">
+
+          <div class="teacher-info-card">
+            <span>CAPACIDADE</span>
+            <strong>12 alunos</strong>
+          </div>
+
+          <div class="teacher-info-card">
+            <span>MODALIDADE</span>
+            <strong>Digitação</strong>
+          </div>
+
+          <div class="teacher-info-card">
+            <span>SISTEMA</span>
+            <strong>Online</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- CRIAR CORRIDA -->
+
+      <div class="teacher-card">
+
         <h2>🚀 Criar nova corrida</h2>
 
         <p>
-          Escolha o texto que os alunos deverão digitar.
-          Todos receberão o mesmo conteúdo.
+          Escolha o texto que os alunos deverão
+          digitar durante a competição.
         </p>
 
-        <textarea id="raceText">O Instituto Avançar acredita que a educação transforma vidas e abre portas para um futuro cheio de oportunidades.</textarea>
+        <textarea
+          id="raceText"
+          maxlength="3000"
+        >O Instituto Avançar acredita que a educação transforma vidas e abre portas para um futuro cheio de oportunidades.</textarea>
 
         <button
           id="createRoomBtn"
           class="primary-btn"
           type="button"
         >
-          🏁 CRIAR SALA
+          🏁 CRIAR NOVA SALA
         </button>
 
-        <p id="createError" class="teacher-error"></p>
+        <p
+          id="createError"
+          class="teacher-error"
+          role="alert"
+        ></p>
+
       </div>
 
       <!-- SALA -->
 
-      <div id="roomPanel" class="teacher-card hidden">
+      <div
+        id="roomPanel"
+        class="teacher-card hidden"
+      >
 
         <h2>🏁 Sala de corrida</h2>
 
-        <p>Compartilhe este código com os alunos:</p>
+        <p>
+          Compartilhe este código com os alunos:
+        </p>
 
-        <div id="roomCode" class="room-code">------</div>
+        <div
+          id="roomCode"
+          class="room-code"
+        >
+          ------
+        </div>
 
-        <div id="roomStatus" class="teacher-status">
+        <div class="teacher-actions">
+
+          <button
+            id="copyCodeBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            📋 COPIAR CÓDIGO
+          </button>
+
+          <button
+            id="copyLinkBtn"
+            class="secondary-btn"
+            type="button"
+          >
+            🔗 COPIAR LINK DOS ALUNOS
+          </button>
+
+        </div>
+
+        <div
+          id="studentLink"
+          class="teacher-link"
+        ></div>
+
+        <p
+          id="copyMessage"
+          class="teacher-success"
+          role="status"
+        ></p>
+
+        <div
+          id="roomStatus"
+          class="teacher-status"
+        >
           Aguardando participantes...
         </div>
 
-        <h3>
+        <h3 class="teacher-subtitle">
           👥 Alunos conectados:
           <span id="studentCount">0/12</span>
         </h3>
@@ -198,6 +435,7 @@
         <div id="studentList"></div>
 
         <div class="teacher-actions">
+
           <button
             id="startRaceBtn"
             class="primary-btn"
@@ -214,16 +452,28 @@
           >
             🔄 ATUALIZAR
           </button>
+
         </div>
 
-        <p id="roomError" class="teacher-error"></p>
+        <p
+          id="roomError"
+          class="teacher-error"
+          role="alert"
+        ></p>
+
       </div>
 
       <!-- RANKING -->
 
-      <div id="teacherRanking" class="teacher-card hidden">
+      <div
+        id="teacherRanking"
+        class="teacher-card hidden"
+      >
+
         <h2>🏆 Classificação da corrida</h2>
+
         <div id="teacherRankingList"></div>
+
       </div>
 
       <button
@@ -231,15 +481,25 @@
         class="secondary-btn"
         type="button"
       >
-        SAIR DO PAINEL
+        🚪 SAIR DO PAINEL
       </button>
 
     </section>
 
   </main>
 
+  <footer class="teacher-footer">
+    Instituto Avançar • AVANÇAR RACE
+  </footer>
+
+  <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
   <script src="supabase-config.js"></script>
+
+  <!-- PAINEL -->
+
   <script src="professor.js"></script>
 
 </body>
