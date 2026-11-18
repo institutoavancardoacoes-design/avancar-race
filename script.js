@@ -58,6 +58,12 @@ let raceActive = false;
 let finished = false;
 
 let roomStatus = "aguardando";
+let modoJogo = "classico";
+
+function modoCompeticaoAtivo() {
+  return modoJogo === "competicao";
+}
+
 
 let players = [];
 
@@ -436,14 +442,19 @@ async function loadRoom() {
 
     const { data, error } = await dbRace
       .from("salas")
-      .select("id,codigo,status,inicio,texto")
+     .select("id,codigo,status,inicio,texto,modo_jogo")
       .eq("id", roomId)
       .single();
 
     if (error) throw error;
 
-    roomStatus = data.status;
-    currentText = data.texto;
+   roomStatus = data.status;
+currentText = data.texto;
+
+// Identificar o modo da corrida
+modoJogo = data.modo_jogo || "classico";
+
+console.log("🎮 Modo da corrida:", modoJogo);
 
     if (roomStatus === "aguardando") {
 
@@ -1601,6 +1612,8 @@ function ativarHabilidade(jogador) {
 // ==========================================
 
 function verificarLiderHabilidade() {
+  // Habilidades exclusivas do Modo Competição
+if (!modoCompeticaoAtivo()) return;
 
   if (!raceStarted || !raceActive) return;
 

@@ -256,10 +256,17 @@ el("createRoomBtn").addEventListener(
         );
       }
 
-      const { data, error } =
-        await db.rpc("criar_sala", {
-          p_texto: texto
-        });
+     // Identificar o modo escolhido pelo professor
+const modoSelecionado = document.querySelector(
+  'input[name="modoJogo"]:checked'
+)?.value || "classico";
+
+// Criar a sala com o modo selecionado
+const { data, error } =
+  await db.rpc("criar_sala", {
+    p_texto: texto,
+    p_modo_jogo: modoSelecionado
+  });
 
       if (error) throw error;
 

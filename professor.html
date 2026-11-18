@@ -219,8 +219,70 @@
         font-size: 13px;
       }
     }
+   
+
+   /* MODOS DE JOGO */
+
+.race-mode-selector {
+  margin: 25px 0;
+}
+
+.race-mode-selector h3 {
+  margin-bottom: 15px;
+  color: #173324;
+}
+
+.race-mode-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.race-mode-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border: 2px solid #d7e8da;
+  border-radius: 15px;
+  background: #f7fbf8;
+  cursor: pointer;
+}
+
+.race-mode-card:has(input:checked) {
+  border-color: #168a18;
+  background: #e4f8e4;
+}
+
+.teacher-card .race-mode-card input {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  accent-color: #168a18;
+}
+
+.race-mode-card span {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.race-mode-card small {
+  color: #607565;
+}
+
+@media (max-width: 600px) {
+  .race-mode-options {
+    grid-template-columns: 1fr;
+  }
+}
+
   </style>
 </head>
+
+
 
 <body>
 
@@ -342,6 +404,42 @@
       <div class="teacher-card">
 
         <h2>🚀 Criar nova corrida</h2>
+        <div class="race-mode-selector">
+
+  <h3>🎮 ESCOLHA O MODO DE JOGO</h3>
+
+  <div class="race-mode-options">
+
+    <label class="race-mode-card">
+      <input
+        type="radio"
+        name="modoJogo"
+        value="classico"
+        checked
+      >
+
+      <span>
+        <strong>🟢 MODO CLÁSSICO</strong>
+        <small>Corrida tradicional de digitação.</small>
+      </span>
+    </label>
+
+    <label class="race-mode-card">
+      <input
+        type="radio"
+        name="modoJogo"
+        value="competicao"
+      >
+
+      <span>
+        <strong>🔥 MODO COMPETIÇÃO</strong>
+        <small>Turbo, poderes, desafios e recompensas.</small>
+      </span>
+    </label>
+
+  </div>
+
+</div>
 
         <p>
           Escolha o texto que os alunos deverão
