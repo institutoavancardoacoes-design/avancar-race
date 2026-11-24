@@ -443,7 +443,7 @@ async function carregarSala() {
     const { data: sala, error } =
       await db
         .from("salas")
-        .select("id,codigo,status,inicio")
+        .select("id,codigo,status,inicio,modo_jogo")
         .eq("id", idConsultado)
         .single();
 
@@ -525,9 +525,16 @@ async function carregarSala() {
       finalizada: "🏆 Corrida finalizada"
     };
 
-    el("roomStatus").textContent =
-      statusTexto[sala.status] ||
-      sala.status;
+    const nomesModos = {
+  classico: "🟢 MODO CLÁSSICO",
+  competicao: "🔥 MODO COMPETIÇÃO",
+  profissional: "💥 MODO PROFISSIONAL"
+};
+
+el("roomStatus").textContent =
+  (nomesModos[sala.modo_jogo] || "MODO CLÁSSICO") +
+  " | " +
+  (statusTexto[sala.status] || sala.status);
 
     // BOTÃO INICIAR
 

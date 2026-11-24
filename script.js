@@ -64,6 +64,14 @@ function modoCompeticaoAtivo() {
   return modoJogo === "competicao";
 }
 
+function modoProfissionalAtivo() {
+  return modoJogo === "profissional";
+}
+
+let explodindo = false;
+let totalExplosoes = 0;
+const explosoesObservadas = new Map();
+
 
 let players = [];
 
@@ -74,6 +82,7 @@ let timerInterval = null;
 let countdownInterval = null;
 
 let lastProgressSent = -1;
+let lastExplosionsSent = -1;
 let lastSyncTime = 0;
 
 let loadingRoom = false;
@@ -352,7 +361,7 @@ async function loadPlayers() {
       .from("jogadores")
       .select(
         "id,nome,animal,progresso,precisao," +
-        "velocidade,erros,finalizou,tempo_final"
+        "velocidade,erros,finalizou,tempo_final,explosoes"
       )
       .eq("sala_id", roomId);
 
@@ -453,6 +462,16 @@ currentText = data.texto;
 
 // Identificar o modo da corrida
 modoJogo = data.modo_jogo || "classico";
+
+// Mostrar o painel apenas no Modo Competição
+const painelCompeticao = document.getElementById("competitionPanel");
+
+if (painelCompeticao) {
+  painelCompeticao.classList.toggle(
+    "hidden",
+    !modoCompeticaoAtivo()
+  );
+}
 
 console.log("🎮 Modo da corrida:", modoJogo);
 
@@ -568,6 +587,8 @@ function prepareRace(startTimestamp) {
   }
 
   raceStarted = true;
+  totalExplosoes = 0;
+explodindo = false;
 
   raceActive = false;
   finished = false;
@@ -870,7 +891,48 @@ function moveRunner(index, progress, animate = true) {
 // ==========================================
 // ATUALIZAR TODOS OS CORREDORES
 // ==========================================
+function explodirAdversario(index) {
 
+  const runner = $(`runner-${index}`);
+
+  if (!runner) return;
+
+  runner.classList.remove("running");
+  runner.classList.add("professional-explosion");
+
+  const efeito = document.createElement("span");
+
+  efeito.className = "explosion-effect";
+  efeito.textContent = "💥";
+
+  runner.appendChild(efeito);
+
+  setTimeout(() => {
+
+    runner.classList.remove("professional-explosion");
+
+    efeito.remove();
+
+    const animal = animals[index];
+
+    const jogador = players.find(
+      item => item.animal === animal.name
+    );
+
+    runner.style.transition = "none";
+
+    moveRunner(
+      index,
+      Number(jogador?.progresso || 0),
+      false
+    );
+
+    void runner.offsetWidth;
+
+    runner.style.transition = "left 450ms linear";
+
+  }, 800);
+}
 function updateAllRunners() {
 
   animals.forEach((animal, index) => {
@@ -878,17 +940,54 @@ function updateAllRunners() {
     const player = players.find(
       item => item.animal === animal.name
     );
+if (
+  modoProfissionalAtivo() &&
+  player &&
+  player.id !== playerId
+) {
 
+  const atual = Number(player.explosoes || 0);
+
+ const anterior = explosoesObservadas.get(
+    player.id
+) ?? 0;
+
+  explosoesObservadas.set(player.id, atual);
+
+ if (atual > anterior) {
+
+    explodirAdversario(index);
+
+    return;
+  }
+
+  if (
+    $(`runner-${index}`)
+      ?.classList.contains("professional-explosion")
+  ) {
+    return;
+  }
+}
+// Aguardar o término da explosão do próprio jogador
+if (
+    modoProfissionalAtivo() &&
+    player?.id === playerId &&
+    explodindo
+) {
+    return;
+}
     let progress =
       Number(player?.progresso || 0);
 
     if (player?.id === playerId) {
 
-      progress = Math.max(
+  progress = modoProfissionalAtivo()
+    ? calculateProgress()
+    : Math.max(
         progress,
         calculateProgress()
       );
-    }
+}
 
     // Animar somente se a posição avançou.
     const runner = $(`runner-${index}`);
@@ -1105,11 +1204,11 @@ async function sendProgress(completed = false) {
 
   if (
     progress === lastProgressSent &&
+    totalExplosoes === lastExplosionsSent &&
     !completed
-  ) {
+) {
     return;
-  }
-
+}
   progressSyncRunning = true;
 
   const accuracy = Number(
@@ -1121,9 +1220,10 @@ async function sendProgress(completed = false) {
     progresso: completed ? 100 : progress,
     precisao: accuracy,
     velocidade: calculateSpeed(),
-    erros: errors
+    erros: errors,
+    explosoes: totalExplosoes
 
-  };
+};
 
   if (completed) {
 
@@ -1144,6 +1244,7 @@ async function sendProgress(completed = false) {
     if (error) throw error;
 
     lastProgressSent = payload.progresso;
+lastExplosionsSent = payload.explosoes;
     lastSyncTime = Date.now();
 
     showMessage("raceMessage", "");
@@ -1176,6 +1277,82 @@ async function sendProgress(completed = false) {
     }
   }
 }
+// ==========================================
+// MODO PROFISSIONAL — EXPLOSÃO
+// ==========================================
+
+function explodirJogador() {
+
+  if (explodindo || finished || !raceActive) return;
+
+  explodindo = true;
+  totalExplosoes++;
+
+  const input = $("typingInput");
+  const runner = $(`runner-${selectedAnimalIndex}`);
+  const race = $("race");
+
+  input.disabled = true;
+
+  typedText = "";
+  correctChars = 0;
+
+  input.value = "";
+
+  $("typingStatus").textContent =
+    "💥 ERRO! VOLTE AO INÍCIO!";
+
+  race.classList.add("professional-error");
+
+  if (runner) {
+
+    runner.classList.remove("running");
+    runner.classList.add("professional-explosion");
+
+    const efeito = document.createElement("span");
+
+    efeito.className = "explosion-effect";
+    efeito.textContent = "💥";
+
+    runner.appendChild(efeito);
+  }
+
+  setTimeout(() => {
+
+    if (runner) {
+
+      runner.classList.remove("professional-explosion");
+
+      runner.querySelectorAll(".explosion-effect")
+        .forEach(element => element.remove());
+
+      runner.style.transition = "none";
+
+      moveRunner(selectedAnimalIndex, 0, false);
+
+      void runner.offsetWidth;
+
+      runner.style.transition = "left 450ms linear";
+    }
+
+    race.classList.remove("professional-error");
+
+    explodindo = false;
+
+    updateStats();
+
+    if (raceActive && !finished) {
+
+      input.disabled = false;
+      input.focus();
+
+      $("typingStatus").textContent =
+        `🔥 MODO PROFISSIONAL | EXPLOSÕES: ${totalExplosoes}`;
+    }
+
+  }, 800);
+
+}
 
 // ==========================================
 // DIGITAÇÃO
@@ -1189,10 +1366,30 @@ $("typingInput").addEventListener("input", event => {
     return;
   }
 
-  const next = event.target.value.slice(
+ const next = event.target.value.slice(
     0,
     currentText.length
   );
+
+  // VALIDAÇÃO DO MODO PROFISSIONAL
+
+  if (modoProfissionalAtivo()) {
+
+    if (event.isComposing || explodindo) return;
+
+    for (let i = 0; i < next.length; i++) {
+
+      if (next[i] !== currentText[i]) {
+
+        errors++;
+        totalTyped++;
+
+        explodirJogador();
+
+        return;
+      }
+    }
+  }
 
   if (next.length > typedText.length) {
 
@@ -1209,6 +1406,52 @@ $("typingInput").addEventListener("input", event => {
       }
     }
   }
+
+  // ==========================================
+// MODO COMPETIÇÃO — COMBOS E PONTOS
+// ==========================================
+
+if (modoCompeticaoAtivo()) {
+
+  // Contar somente novos caracteres digitados
+  if (next.length > typedText.length) {
+
+    for (let i = typedText.length; i < next.length; i++) {
+
+    if (
+  next[i] === currentText[i] &&
+  i >= maiorPosicaoPontuada
+) {
+  maiorPosicaoPontuada = i + 1;
+
+        comboAtual++;
+
+        // Pontos por acerto e bônus por sequência
+        const bonusCombo = Math.min(
+          Math.floor(comboAtual / 10),
+          5
+        );
+
+        pontosCompeticao += 10 + bonusCombo * 2;
+
+        // Carregar energia turbo
+        energiaTurbo = Math.min(
+          100,
+          energiaTurbo + 2
+        );
+
+      } else {
+
+        // Um erro interrompe a sequência
+        comboAtual = 0;
+
+      }
+    }
+  }
+
+  // Atualizar os indicadores
+  atualizarPainelCompeticao();
+}
 
   typedText = next;
 
@@ -1737,3 +1980,40 @@ showFinalResults = function (...args) {
 console.log(
   "AVANÇAR RACE 4.2 — Habilidades especiais carregadas!"
 );
+// ==========================================
+// AVANÇAR RACE 4.4
+// SISTEMA DE COMBOS E PONTUAÇÃO
+// ==========================================
+
+let comboAtual = 0;
+let pontosCompeticao = 0;
+let energiaTurbo = 0;
+let maiorPosicaoPontuada = 0;
+
+function atualizarPainelCompeticao() {
+  if (!modoCompeticaoAtivo()) return;
+
+  const combo = document.getElementById("comboCount");
+  const pontos = document.getElementById("competitionPoints");
+  const turbo = document.getElementById("turboFill");
+  const status = document.getElementById("turboStatus");
+
+  if (combo) {
+    combo.textContent = `${comboAtual}x`;
+  }
+
+  if (pontos) {
+    pontos.textContent = `💎 ${pontosCompeticao} PONTOS`;
+  }
+
+  if (turbo) {
+    turbo.style.width = `${energiaTurbo}%`;
+  }
+
+  if (status) {
+    status.textContent =
+      energiaTurbo >= 100
+        ? "⚡ TURBO CARREGADO!"
+        : `${energiaTurbo}% de energia`;
+  }
+}

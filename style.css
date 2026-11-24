@@ -1030,3 +1030,192 @@ button {
   }
 
 }
+/* ==========================================
+   AVANÇAR RACE 4.4
+   PAINEL DO MODO COMPETIÇÃO
+========================================== */
+
+.competition-panel {
+  margin: 20px 4%;
+  padding: 25px;
+  background: linear-gradient(135deg, #173324, #245c32);
+  border: 2px solid #38c94a;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 10px 30px #00000020;
+}
+
+.competition-panel.hidden {
+  display: none !important;
+}
+
+.competition-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.competition-heading span {
+  color: #8dff92;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.competition-heading h3 {
+  font-size: 24px;
+  margin-top: 5px;
+}
+
+#competitionPoints {
+  padding: 12px 20px;
+  background: #ffffff20;
+  border: 1px solid #ffffff40;
+  border-radius: 12px;
+  color: #ffe66d;
+  font-size: 18px;
+}
+
+.competition-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.competition-card {
+  min-width: 0;
+  padding: 20px;
+  background: #ffffff12;
+  border: 1px solid #ffffff25;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.competition-card > span {
+  font-size: 12px;
+  font-weight: 900;
+  color: #a9ffad;
+}
+
+.competition-card > strong {
+  font-size: 26px;
+  font-weight: 900;
+}
+
+.competition-card small {
+  font-size: 12px;
+  color: #d2ead5;
+  line-height: 1.5;
+}
+
+.turbo-bar {
+  height: 16px;
+  background: #ffffff25;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.turbo-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #ffe066, #ff9f1c);
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 700px) {
+  .competition-panel {
+    padding: 18px;
+  }
+
+  .competition-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .competition-heading h3 {
+    font-size: 20px;
+  }
+}
+/* ==========================================
+   AVANÇAR RACE 5.0
+   MODO PROFISSIONAL — EXPLOSÃO
+========================================== */
+
+.professional-explosion {
+  animation: professionalExplosion 800ms ease-out !important;
+  z-index: 100;
+}
+
+@keyframes professionalExplosion {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+    opacity: 1;
+  }
+
+  20% {
+    transform: scale(1.5) rotate(-15deg);
+    filter: brightness(4);
+  }
+
+  45% {
+    transform: scale(2) rotate(15deg);
+    filter: brightness(3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Efeito visual da explosão */
+
+.explosion-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 80px;
+  pointer-events: none;
+  z-index: 999;
+  animation: explosionEffect 800ms ease-out forwards;
+}
+
+@keyframes explosionEffect {
+  0% {
+    transform: translate(-50%, -50%) scale(0.3);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+/* Tela vermelha ao cometer um erro */
+
+.professional-error {
+  animation: professionalFlash 800ms ease-out;
+}
+
+@keyframes professionalFlash {
+  0%, 40% {
+    box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.7);
+  }
+
+  100% {
+    box-shadow: inset 0 0 0 transparent;
+  }
+}

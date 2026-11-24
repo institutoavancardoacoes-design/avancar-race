@@ -234,7 +234,7 @@
 
 .race-mode-options {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 15px;
 }
 
@@ -278,7 +278,26 @@
     grid-template-columns: 1fr;
   }
 }
+/* MODO PROFISSIONAL */
 
+.professional-mode {
+  border-color: #efb4b4;
+  background: #fff5f5;
+}
+
+.professional-mode strong {
+  color: #c62828;
+}
+
+.professional-mode:has(input:checked) {
+  border-color: #dc2626;
+  background: #fee2e2;
+  box-shadow: 0 0 15px #dc262625;
+}
+
+.teacher-card .professional-mode input {
+  accent-color: #dc2626;
+}
   </style>
 </head>
 
@@ -436,7 +455,24 @@
         <small>Turbo, poderes, desafios e recompensas.</small>
       </span>
     </label>
+    <label class="race-mode-card professional-mode">
 
+      <input
+        type="radio"
+        name="modoJogo"
+        value="profissional"
+      >
+
+      <span>
+        <strong>💥 MODO PROFISSIONAL</strong>
+        <small>
+          Precisão absoluta! Acentos, pontuação e
+          maiúsculas obrigatórios. Errou, explodiu
+          e voltou à largada.
+        </small>
+      </span>
+
+    </label>
   </div>
 
 </div>
