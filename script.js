@@ -216,37 +216,107 @@ function loadCharacters() {
 // AUTENTICAÇÃO DO ALUNO
 // ==========================================
 
-async function ensureStudentSession() {
+async function ensureStudentSession(
+    criarVisitante = true
+) {
 
-  let {
-    data: { session },
-    error
-  } = await dbRace.auth.getSession();
+    let {
+        data: { session },
+        error
+    } = await dbRace.auth.getSession();
 
-  if (error) throw error;
+    if (error) throw error;
 
-  if (!session) {
+    const nameInput = $("playerName");
 
-    const result =
-      await dbRace.auth.signInAnonymously();
+    if (!session && !criarVisitante) {
 
-    if (result.error) {
-      throw result.error;
+        nameInput.readOnly = false;
+
+        return null;
+
     }
 
-    session = result.data.session;
-  }
+    if (!session) {
 
-  if (!session?.user?.is_anonymous) {
+        const result =
+            await dbRace.auth.signInAnonymously();
 
-    throw new Error(
-      "Este navegador está conectado como professor. " +
-      "Abra o jogo em uma janela anônima ou outro navegador."
+        if (result.error) throw result.error;
+
+        session = result.data.session;
+
+    }
+
+    const { data, error: erroUsuario } =
+        await dbRace.auth.getUser();
+
+    if (erroUsuario || !data?.user) {
+
+        throw new Error(
+            "Não foi possível identificar o jogador."
+        );
+
+    }
+
+    const usuario = data.user;
+
+    // JOGADOR VISITANTE
+
+    if (usuario.is_anonymous) {
+
+        nameInput.readOnly = false;
+
+        nameInput.placeholder = "Digite seu nome";
+
+        return session;
+
+    }
+
+    // ALUNO CADASTRADO
+
+    const { data: aluno, error: erroAluno } =
+        await dbRace
+            .from("alunos")
+            .select("id,nome,matricula,ativo,status")
+            .eq("usuario_id", usuario.id)
+            .maybeSingle();
+
+    if (erroAluno) throw erroAluno;
+
+    if (
+        !aluno ||
+        !aluno.ativo ||
+        aluno.status !== "aprovado"
+    ) {
+
+        throw new Error(
+            "Entre com uma conta de aluno aprovada."
+        );
+
+    }
+
+    // PREENCHER NOME AUTOMATICAMENTE
+
+    playerName = aluno.nome.trim().slice(0, 20);
+
+    nameInput.value = playerName;
+
+    nameInput.readOnly = true;
+
+    nameInput.style.backgroundColor = "#dcfce7";
+
+    nameInput.style.color = "#166534";
+
+    showMessage(
+        "setupMessage",
+        "🎓 Aluno identificado! Seu desempenho será registrado."
     );
-  }
 
-  return session;
+    return session;
+
 }
+
 
 // ==========================================
 // ENTRAR NA SALA
@@ -254,95 +324,101 @@ async function ensureStudentSession() {
 
 async function startGame() {
 
-  if (roomId) return;
+    if (roomId) return;
 
-  const nameInput = $("playerName");
-  const codeInput = $("roomCodeInput");
-  const joinButton = $("joinBtn");
+    const nameInput = $("playerName");
+    const codeInput = $("roomCodeInput");
+    const joinButton = $("joinBtn");
 
-  playerName = nameInput.value.trim().slice(0, 20);
+    if (joinButton.disabled) return;
 
-  roomCode = codeInput.value
-    .trim()
-    .toUpperCase();
+    roomCode = codeInput.value.trim().toUpperCase();
 
-  showMessage("setupMessage");
+    showMessage("setupMessage");
 
-  if (!playerName) {
+    if (roomCode.length !== 6) {
 
-    showMessage(
-      "setupMessage",
-      "Digite seu nome para participar!"
-    );
+        showMessage(
+            "setupMessage",
+            "Digite o código de seis caracteres da sala."
+        );
 
-    nameInput.focus();
-    return;
-  }
+        codeInput.focus();
+        return;
 
-  if (roomCode.length !== 6) {
-
-    showMessage(
-      "setupMessage",
-      "Digite o código de seis caracteres da sala."
-    );
-
-    codeInput.focus();
-    return;
-  }
-
-  joinButton.disabled = true;
-
-  showMessage(
-    "setupMessage",
-    "Conectando à corrida..."
-  );
-
-  try {
-
-    await ensureStudentSession();
-
-    const animal = animals[selectedAnimalIndex];
-
-    const { data, error } =
-      await dbRace.rpc("entrar_na_sala", {
-
-        p_codigo: roomCode,
-        p_nome: playerName,
-        p_animal: animal.name
-
-      });
-
-    if (error) throw error;
-
-    if (!data || !data.length) {
-      throw new Error("Não foi possível entrar na sala.");
     }
 
-    playerId = data[0].jogador_id;
-    roomId = data[0].sala_id;
-    currentText = data[0].texto;
-
-    $("waitingCode").textContent = roomCode;
-
-    showScreen("waiting");
-
-    await loadPlayers();
-    await loadRoom();
-
-    subscribeRoom();
-    startSynchronization();
-
-  } catch (error) {
-
-    console.error(error);
+    joinButton.disabled = true;
 
     showMessage(
-      "setupMessage",
-      error.message
+        "setupMessage",
+        "Conectando à corrida..."
     );
 
-    joinButton.disabled = false;
-  }
+    try {
+
+        await ensureStudentSession();
+
+        playerName = nameInput.value.trim().slice(0, 20);
+
+        if (!playerName) {
+
+            nameInput.focus();
+
+            throw new Error(
+                "Digite seu nome para participar!"
+            );
+
+        }
+
+        const animal = animals[selectedAnimalIndex];
+
+        const { data, error } =
+            await dbRace.rpc("entrar_na_sala", {
+
+                p_codigo: roomCode,
+                p_nome: playerName,
+                p_animal: animal.name
+
+            });
+
+        if (error) throw error;
+
+        if (!data || !data.length) {
+
+            throw new Error(
+                "Não foi possível entrar na sala."
+            );
+
+        }
+
+        playerId = data[0].jogador_id;
+        roomId = data[0].sala_id;
+        currentText = data[0].texto;
+
+        $("waitingCode").textContent = roomCode;
+
+        showScreen("waiting");
+
+        await loadPlayers();
+        await loadRoom();
+
+        subscribeRoom();
+        startSynchronization();
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "setupMessage",
+            error.message
+        );
+
+        joinButton.disabled = false;
+
+    }
+
 }
 
 // ==========================================
@@ -1190,92 +1266,217 @@ function scheduleProgressSync() {
 // ENVIAR PROGRESSO AO SUPABASE
 // ==========================================
 
+
 async function sendProgress(completed = false) {
 
-  if (!playerId || !roomId) return;
+    if (!playerId || !roomId) return false;
 
-  if (progressSyncRunning) {
+    if (finished && !completed) return false;
 
-    progressSyncPending = true;
-    return;
-  }
+    if (progressSyncRunning) {
 
-  const progress = calculateProgress();
+        if (!completed) {
 
-  if (
-    progress === lastProgressSent &&
-    totalExplosoes === lastExplosionsSent &&
-    !completed
-) {
-    return;
-}
-  progressSyncRunning = true;
+            progressSyncPending = true;
+            return false;
 
-  const accuracy = Number(
-    $("accuracy").textContent.replace("%", "")
-  );
+        }
 
-  const payload = {
+        while (progressSyncRunning) {
 
-    progresso: completed ? 100 : progress,
-    precisao: accuracy,
-    velocidade: calculateSpeed(),
-    erros: errors,
-    explosoes: totalExplosoes
+            await new Promise(
+                resolve => setTimeout(resolve, 50)
+            );
 
-};
+        }
 
-  if (completed) {
-
-    payload.finalizou = true;
-
-    payload.tempo_final = Number(
-      ((endTime - startTime) / 1000).toFixed(2)
-    );
-  }
-
-  try {
-
-    const { error } = await dbRace
-      .from("jogadores")
-      .update(payload)
-      .eq("id", playerId);
-
-    if (error) throw error;
-
-    lastProgressSent = payload.progresso;
-lastExplosionsSent = payload.explosoes;
-    lastSyncTime = Date.now();
-
-    showMessage("raceMessage", "");
-
-  } catch (error) {
-
-    console.error(
-      "Erro ao sincronizar progresso:",
-      error.message
-    );
-
-    showMessage(
-      "raceMessage",
-      "⚠️ Falha ao sincronizar. Verifique a conexão."
-    );
-
-  } finally {
-
-    progressSyncRunning = false;
-
-    if (progressSyncPending) {
-
-      progressSyncPending = false;
-
-      // Se o aluno terminou enquanto uma
-      // atualização estava em andamento,
-      // enviar o resultado completo.
-
-      sendProgress(finished);
     }
-  }
+
+    progressSyncPending = false;
+
+    const progress = calculateProgress();
+
+    if (
+        progress === lastProgressSent &&
+        totalExplosoes === lastExplosionsSent &&
+        !completed
+    ) {
+        return true;
+    }
+
+    progressSyncRunning = true;
+
+    try {
+
+        const accuracy = Number(
+            $("accuracy").textContent.replace("%", "")
+        );
+
+        const tempoDecorrido = Math.max(
+            1000,
+            (endTime || Date.now()) - startTime
+        );
+
+        const caracteresPorMinuto = Math.round(
+            correctChars / (tempoDecorrido / 60000)
+        );
+
+        const payload = {
+
+            progresso: completed ? 100 : progress,
+
+            precisao: accuracy,
+
+            velocidade: calculateSpeed(),
+
+            caracteres_por_minuto: caracteresPorMinuto,
+
+            acertos: correctChars,
+
+            erros: errors,
+
+            explosoes: totalExplosoes,
+
+            pontuacao: modoCompeticaoAtivo()
+                ? pontosCompeticao
+                : 0
+
+        };
+
+        if (completed) {
+
+            payload.finalizou = true;
+
+            payload.tempo_final = Math.max(
+                0.01,
+                Number(
+                    ((endTime - startTime) / 1000).toFixed(2)
+                )
+            );
+
+        }
+
+        const maxTentativas = completed ? 5 : 1;
+
+        for (
+            let tentativa = 1;
+            tentativa <= maxTentativas;
+            tentativa++
+        ) {
+
+            try {
+
+                const { data, error } = await dbRace
+                    .from("jogadores")
+                    .update(payload)
+                    .eq("id", playerId)
+                    .select("id,finalizou")
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (!data || (completed && !data.finalizou)) {
+
+                    const {
+                        data: registro,
+                        error: erroConsulta
+                    } = await dbRace
+                        .from("jogadores")
+                        .select("id,finalizou")
+                        .eq("id", playerId)
+                        .maybeSingle();
+
+                    if (erroConsulta) throw erroConsulta;
+
+                    if (
+                        !completed ||
+                        !registro ||
+                        !registro.finalizou
+                    ) {
+
+                        throw new Error(
+                            "Salvamento não confirmado."
+                        );
+
+                    }
+
+                }
+
+                lastProgressSent = payload.progresso;
+
+                lastExplosionsSent = payload.explosoes;
+
+                lastSyncTime = Date.now();
+
+                if (completed) {
+
+                    showMessage(
+                        "raceMessage",
+                        "✅ Resultado registrado com sucesso!"
+                    );
+
+                } else {
+
+                    showMessage("raceMessage", "");
+
+                }
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    `Tentativa ${tentativa}:`,
+                    error.message
+                );
+
+                if (tentativa < maxTentativas) {
+
+                    showMessage(
+                        "raceMessage",
+                        `⏳ Salvando resultado... ${tentativa}/${maxTentativas}`
+                    );
+
+                    await new Promise(
+                        resolve => setTimeout(
+                            resolve,
+                            1000 * tentativa
+                        )
+                    );
+
+                }
+
+            }
+
+        }
+
+        showMessage(
+            "raceMessage",
+            completed
+                ? "⚠️ Resultado não confirmado. Não feche a página."
+                : "⚠️ Falha na sincronização."
+        );
+
+        return false;
+
+    } finally {
+
+        progressSyncRunning = false;
+
+        if (progressSyncPending && !finished) {
+
+            progressSyncPending = false;
+
+            scheduleProgressSync();
+
+        } else {
+
+            progressSyncPending = false;
+
+        }
+
+    }
+
 }
 // ==========================================
 // MODO PROFISSIONAL — EXPLOSÃO
@@ -1539,35 +1740,97 @@ function updateRanking() {
 
 async function finishRace() {
 
-  if (finished) return;
+    if (finished) return;
 
-  finished = true;
-  raceActive = false;
+    finished = true;
+    raceActive = false;
 
-  endTime = Date.now();
+    endTime = Date.now();
 
-  clearInterval(timerInterval);
-  clearTimeout(progressSyncTimer);
+    clearInterval(timerInterval);
+    clearTimeout(progressSyncTimer);
 
-  progressSyncTimer = null;
+    progressSyncTimer = null;
 
-  updateTimer();
-  updateSpeed();
+    updateTimer();
+    updateSpeed();
 
-  $("typingInput").disabled = true;
+    $("typingInput").disabled = true;
 
-  $("typingStatus").textContent =
-    "✅ VOCÊ TERMINOU!";
+    $("typingStatus").textContent =
+        "⏳ SALVANDO DESEMPENHO...";
 
-  showMessage(
-    "raceMessage",
-    "🏆 Você concluiu! Aguarde os outros competidores."
-  );
+    showMessage(
+        "raceMessage",
+        "Aguarde! Registrando seu resultado."
+    );
 
-  await sendProgress(true);
+    // CONFIRMAR SALVAMENTO NO SUPABASE
 
-  await loadPlayers();
-  await loadRoom();
+    const resultadoSalvo = await sendProgress(true);
+
+    if (!resultadoSalvo) {
+
+        $("typingStatus").textContent =
+            "⚠️ SALVAMENTO PENDENTE";
+
+        showMessage(
+            "raceMessage",
+            "Não foi possível confirmar seu resultado. Não feche a página."
+        );
+
+        const botao = document.createElement("button");
+
+        botao.type = "button";
+        botao.className = "primary-btn";
+        botao.textContent = "🔄 TENTAR SALVAR NOVAMENTE";
+
+        $("raceMessage").appendChild(botao);
+
+        botao.onclick = async () => {
+
+            botao.disabled = true;
+
+            const salvo = await sendProgress(true);
+
+            if (salvo) {
+
+                $("typingStatus").textContent =
+                    "✅ VOCÊ TERMINOU!";
+
+                showMessage(
+                    "raceMessage",
+                    "🏆 Resultado registrado com sucesso!"
+                );
+
+                await loadPlayers();
+                await loadRoom();
+
+            } else {
+
+                botao.disabled = false;
+
+                $("raceMessage").appendChild(botao);
+
+            }
+
+        };
+
+        return;
+
+    }
+
+    $("typingStatus").textContent =
+        "✅ VOCÊ TERMINOU!";
+
+    showMessage(
+        "raceMessage",
+        "🏆 Resultado registrado! Aguarde os outros competidores."
+    );
+
+    await loadPlayers();
+    await loadRoom();
+
 }
 
 // ==========================================
@@ -2017,3 +2280,31 @@ function atualizarPainelCompeticao() {
         : `${energiaTurbo}% de energia`;
   }
 }
+// ==========================================
+// AVANÇAR RACE 6.0
+// IDENTIFICAÇÃO AUTOMÁTICA DO ALUNO
+// ==========================================
+
+async function identificarAlunoAutomaticamente() {
+
+    try {
+
+        await ensureStudentSession(false);
+
+    } catch (error) {
+
+        console.error(
+            "Erro ao identificar aluno:",
+            error.message
+        );
+
+        showMessage(
+            "setupMessage",
+            error.message
+        );
+
+    }
+
+}
+
+identificarAlunoAutomaticamente();

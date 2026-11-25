@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#166534">
+
+    <title>Cadastro do Aluno | AVANÇAR RACE</title>
+
+    <link rel="stylesheet" href="cadastro.css">
+
+    <style>
+
+        /* SELETOR DE TURMAS */
+
+        .input-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #d1e0d5;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #163b25;
+            font-family: inherit;
+            font-size: 14px;
+            box-sizing: border-box;
+            cursor: pointer;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .input-group select:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <main class="cadastro-container">
+
+        <section class="cadastro-card">
+
+            <div class="brand">
+
+                <img
+                    src="logo-avancar.png"
+                    alt="Instituto Avançar"
+                    class="logo"
+                >
+
+                <span class="institution">
+                    INSTITUTO AVANÇAR APRESENTA
+                </span>
+
+                <h1>AVANÇAR RACE</h1>
+
+                <span class="badge">
+                    CADASTRO DO ALUNO
+                </span>
+
+            </div>
+
+            <div class="welcome">
+
+                <h2>Crie sua conta!</h2>
+
+                <p>
+                    Desenvolva suas habilidades de digitação,
+                    participe das competições e acompanhe
+                    sua evolução.
+                </p>
+
+            </div>
+
+            <form id="cadastroForm">
+
+                <!-- INFORMAÇÕES PESSOAIS -->
+
+                <div class="form-section">
+
+                    <h3>👤 Informações pessoais</h3>
+
+                    <div class="input-group">
+
+                        <label for="nome">
+                            Nome completo *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Digite seu nome completo"
+                            autocomplete="name"
+                            minlength="3"
+                            maxlength="150"
+                            required
+                        >
+
+                    </div>
+
+                    <!-- SELEÇÃO DE TURMA -->
+
+                    <div class="input-group">
+
+                        <label for="turma">
+                            Selecione sua turma *
+                        </label>
+
+                        <select
+                            id="turma"
+                            name="turma"
+                            required
+                        >
+
+                            <option value="" disabled selected>
+                                Selecione sua turma
+                            </option>
+
+                            <option value="matutino">
+                                Matutino
+                            </option>
+
+                            <option value="vespertino">
+                                Vespertino
+                            </option>
+
+                            <option value="noturno">
+                                Noturno
+                            </option>
+
+                        </select>
+
+                        <small>
+                            Selecione o turno em que você estuda.
+                        </small>
+
+                    </div>
+
+                </div>
+
+                <!-- SEGURANÇA -->
+
+                <div class="form-section">
+
+                    <h3>🔐 Segurança da conta</h3>
+
+                    <div class="input-group">
+
+                        <label for="senha">
+                            Crie sua senha *
+                        </label>
+
+                        <div class="password-container">
+
+                            <input
+                                type="password"
+                                id="senha"
+                                name="senha"
+                                placeholder="Mínimo de 8 caracteres"
+                                autocomplete="new-password"
+                                minlength="8"
+                                maxlength="72"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="toggleSenha"
+                                class="toggle-password"
+                                aria-label="Mostrar senha"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="input-group">
+
+                        <label for="confirmarSenha">
+                            Confirme sua senha *
+                        </label>
+
+                        <div class="password-container">
+
+                            <input
+                                type="password"
+                                id="confirmarSenha"
+                                name="confirmarSenha"
+                                placeholder="Digite novamente sua senha"
+                                autocomplete="new-password"
+                                minlength="8"
+                                maxlength="72"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="toggleConfirmarSenha"
+                                class="toggle-password"
+                                aria-label="Mostrar senha"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- AVISO -->
+
+                <div class="aviso">
+
+                    <strong>
+                        📌 Acompanhe sua evolução!
+                    </strong>
+
+                    <p>
+                        Sua conta será vinculada à turma de
+                        Informática do turno selecionado.
+                    </p>
+
+                    <p>
+                        Após a aprovação do professor, você poderá
+                        acompanhar sua velocidade, precisão,
+                        acertos, erros e posição no ranking.
+                    </p>
+
+                </div>
+
+                <!-- MENSAGENS -->
+
+                <div
+                    id="mensagem"
+                    class="mensagem"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+                <!-- BOTÃO DE CADASTRO -->
+
+                <button
+                    type="submit"
+                    id="btnCadastro"
+                    class="btn-cadastro"
+                >
+
+                    CRIAR MINHA CONTA
+
+                </button>
+
+            </form>
+
+            <!-- LINK DE LOGIN -->
+
+            <div class="login-link">
+
+                <p>Já possui uma conta?</p>
+
+                <a href="login.html">
+                    Entrar na minha conta
+                </a>
+
+            </div>
+
+            <!-- VOLTAR -->
+
+            <a href="index.html" class="btn-voltar">
+
+                ← Voltar para o jogo
+
+            </a>
+
+            <!-- RODAPÉ -->
+
+            <footer>
+
+                <p>
+                    © <span id="anoAtual"></span>
+                    Instituto Avançar
+                </p>
+
+                <span>AVANÇAR RACE 6.0</span>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase-config.js"></script>
+
+    <script src="cadastro.js"></script>
+
+</body>
+
+</html>

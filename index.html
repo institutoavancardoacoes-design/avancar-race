@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
+
     .room-input {
       display: block;
       width: 100%;
@@ -61,31 +62,154 @@
       text-align: center;
       margin: 12px;
     }
+
+    /* ==========================================
+       AVANÇAR RACE 6.0
+       BOTÕES DE ACESSO
+    ========================================== */
+
+    .access-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 380px;
+      margin: 28px auto 0;
+    }
+
+    .access-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 16px 20px;
+      border: 2px solid transparent;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 800;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .access-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px #0002;
+    }
+
+    .access-btn:active {
+      transform: translateY(0);
+    }
+
+    .access-btn:focus-visible {
+      outline: 3px solid #86efac;
+      outline-offset: 3px;
+    }
+
+    .student-btn {
+      background: #15803d;
+      color: white;
+    }
+
+    .register-btn {
+      background: #dcfce7;
+      color: #166534;
+      border-color: #86efac;
+    }
+
+    .visitor-btn {
+      background: white;
+      color: #166534;
+      border-color: #16a34a;
+    }
+
+    .teacher-btn {
+      background: #14532d;
+      color: white;
+    }
+
+    .access-description {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .version-label {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: #edf9ee;
+      color: #166534;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 480px) {
+
+      .access-btn {
+        font-size: 13px;
+        padding: 14px;
+      }
+
+      .access-buttons {
+        gap: 10px;
+      }
+
+      .waiting-box {
+        padding: 20px;
+      }
+
+    }
+
   </style>
 </head>
 
 <body>
 
+  <!-- ==========================================
+       CABEÇALHO
+  ========================================== -->
+
   <header class="header">
+
     <div class="brand">
-      <img src="logo-avancar.png" alt="Instituto Avançar">
+
+      <img
+        src="logo-avancar.png"
+        alt="Instituto Avançar"
+      >
 
       <div>
         <span>INSTITUTO AVANÇAR APRESENTA</span>
-        <h1>AVANÇAR <strong>RACE</strong></h1>
+
+        <h1>
+          AVANÇAR <strong>RACE</strong>
+        </h1>
       </div>
+
     </div>
 
     <div class="header-badge">
       🏆 CAMPEONATO DE DIGITAÇÃO
     </div>
+
   </header>
 
   <main>
 
-    <!-- TELA INICIAL -->
+    <!-- ==========================================
+         TELA INICIAL
+    ========================================== -->
 
     <section id="home" class="screen active">
+
       <div class="hero">
 
         <div class="hero-label">
@@ -106,19 +230,60 @@
           🦁 🐯 🐰 🦊 🐼 🐻
         </div>
 
-        <button
-          class="primary-btn"
-          onclick="showScreen('setup')"
-        >
-          🏁 COMEÇAR A JOGAR
-        </button>
+        <!-- ACESSOS DO SISTEMA -->
+
+        <div class="access-buttons">
+
+          <a
+            href="login.html"
+            class="access-btn student-btn"
+          >
+            👤 ENTRAR COMO ALUNO
+          </a>
+
+          <a
+            href="cadastro.html"
+            class="access-btn register-btn"
+          >
+            📝 CRIAR MINHA CONTA
+          </a>
+
+          <button
+            type="button"
+            class="access-btn visitor-btn"
+            onclick="showScreen('setup')"
+          >
+            🏁 ACESSAR CORRIDA
+          </button>
+
+          <a
+            href="professor.html"
+            class="access-btn teacher-btn"
+          >
+            👨‍🏫 ÁREA DO PROFESSOR
+          </a>
+
+        </div>
+
+        <div class="access-description">
+          Entre na sua conta para acompanhar seu
+          desempenho, evolução e classificação.
+        </div>
+
+        <div class="version-label">
+          AVANÇAR RACE 6.0
+        </div>
 
       </div>
+
     </section>
 
-    <!-- ENTRADA DOS ALUNOS -->
+    <!-- ==========================================
+         ENTRADA DOS ALUNOS
+    ========================================== -->
 
     <section id="setup" class="screen">
+
       <div class="setup-card">
 
         <div class="section-label">
@@ -147,11 +312,15 @@
           placeholder="Digite seu nome"
           maxlength="20"
           autocomplete="off"
+          aria-label="Nome do jogador"
         >
 
         <h3>ESCOLHA SEU ANIMAL</h3>
 
-        <div id="characters" class="characters"></div>
+        <div
+          id="characters"
+          class="characters"
+        ></div>
 
         <button
           id="joinBtn"
@@ -167,12 +336,25 @@
           role="status"
         ></p>
 
+        <button
+          type="button"
+          class="access-btn visitor-btn"
+          onclick="showScreen('home')"
+          style="max-width: 380px; margin: 15px auto 0;"
+        >
+          ← VOLTAR AO INÍCIO
+        </button>
+
       </div>
+
     </section>
 
-    <!-- SALA DE ESPERA -->
+    <!-- ==========================================
+         SALA DE ESPERA
+    ========================================== -->
 
     <section id="waiting" class="screen">
+
       <div class="waiting-box">
 
         <div class="section-label">
@@ -183,20 +365,32 @@
 
         <p>Código da corrida:</p>
 
-        <div id="waitingCode" class="waiting-code">
+        <div
+          id="waitingCode"
+          class="waiting-code"
+        >
           ------
         </div>
 
-        <p id="waitingStatus" class="game-message">
+        <p
+          id="waitingStatus"
+          class="game-message"
+        >
           Aguardando a largada...
         </p>
 
         <h3>
           👥 Participantes
-          <span id="waitingCount">0/12</span>
+
+          <span id="waitingCount">
+            0/12
+          </span>
         </h3>
 
-        <div id="waitingPlayers" class="waiting-list"></div>
+        <div
+          id="waitingPlayers"
+          class="waiting-list"
+        ></div>
 
         <p>
           Não feche esta página.
@@ -204,20 +398,25 @@
         </p>
 
       </div>
+
     </section>
 
-    <!-- CORRIDA -->
+    <!-- ==========================================
+         CORRIDA
+    ========================================== -->
 
     <section id="race" class="screen">
 
       <div class="game-header">
 
         <div>
+
           <span class="section-label">
             CORRIDA EM ANDAMENTO
           </span>
 
           <h2>🏁 AVANÇAR RACE</h2>
+
         </div>
 
         <div class="game-stats">
@@ -238,23 +437,32 @@
           </div>
 
         </div>
+
       </div>
 
-      <!-- CENÁRIO -->
+      <!-- ==========================================
+           CENÁRIO
+      ========================================== -->
 
       <div class="race-world">
 
         <div class="scenery-top">
-          <span>🌳 🌿 🌴 🌳 🌿 🌴 🌳 🌿 🌴</span>
+
+          <span>
+            🌳 🌿 🌴 🌳 🌿 🌴 🌳 🌿 🌴
+          </span>
+
         </div>
 
         <div class="billboards">
 
           <div class="billboard">
+
             <img
               src="logo-avancar.png"
               alt="Instituto Avançar"
             >
+
           </div>
 
           <div class="billboard text-board">
@@ -268,9 +476,16 @@
         </div>
 
         <div class="track-container">
+
           <div class="track-perspective">
-            <div id="track" class="track"></div>
+
+            <div
+              id="track"
+              class="track"
+            ></div>
+
           </div>
+
         </div>
 
         <div class="scenery-bottom">
@@ -279,52 +494,89 @@
 
       </div>
 
-      <!-- DIGITAÇÃO -->
+      <!-- ==========================================
+           MODO COMPETIÇÃO
+      ========================================== -->
 
-<!-- MODO COMPETIÇÃO -->
+      <section
+        id="competitionPanel"
+        class="competition-panel hidden"
+      >
 
-<section id="competitionPanel" class="competition-panel hidden">
+        <div class="competition-heading">
 
-  <div class="competition-heading">
-    <div>
-      <span>🔥 MODO COMPETIÇÃO</span>
-      <h3>DESAFIO DOS CAMPEÕES</h3>
-    </div>
+          <div>
 
-    <strong id="competitionPoints">💎 0 PONTOS</strong>
-  </div>
+            <span>🔥 MODO COMPETIÇÃO</span>
 
-  <div class="competition-grid">
+            <h3>DESAFIO DOS CAMPEÕES</h3>
 
-    <div class="competition-card">
-      <span>🔥 COMBO</span>
-      <strong id="comboCount">0x</strong>
-      <small>Acerte caracteres consecutivos</small>
-    </div>
+          </div>
 
-    <div class="competition-card">
-      <span>⚡ ENERGIA TURBO</span>
+          <strong id="competitionPoints">
+            💎 0 PONTOS
+          </strong>
 
-      <div class="turbo-bar">
-        <div id="turboFill" class="turbo-fill"></div>
-      </div>
+        </div>
 
-      <small id="turboStatus">Carregando energia...</small>
-    </div>
+        <div class="competition-grid">
 
-    <div class="competition-card">
-      <span>🎯 DESAFIO ATUAL</span>
-      <strong id="challengeTitle">Prepare-se!</strong>
-      <small id="challengeDescription">Aguarde a largada.</small>
-    </div>
+          <div class="competition-card">
 
-  </div>
+            <span>🔥 COMBO</span>
 
-</section>
+            <strong id="comboCount">
+              0x
+            </strong>
+
+            <small>
+              Acerte caracteres consecutivos
+            </small>
+
+          </div>
+
+          <div class="competition-card">
+
+            <span>⚡ ENERGIA TURBO</span>
+
+            <div class="turbo-bar">
+
+              <div
+                id="turboFill"
+                class="turbo-fill"
+              ></div>
+
+            </div>
+
+            <small id="turboStatus">
+              Carregando energia...
+            </small>
+
+          </div>
+
+          <div class="competition-card">
+
+            <span>🎯 DESAFIO ATUAL</span>
+
+            <strong id="challengeTitle">
+              Prepare-se!
+            </strong>
+
+            <small id="challengeDescription">
+              Aguarde a largada.
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==========================================
+           DIGITAÇÃO
+      ========================================== -->
 
       <div class="typing-card">
-
-
 
         <div class="typing-top">
 
@@ -368,11 +620,16 @@
 
         </div>
 
-        <p id="raceMessage" class="game-message"></p>
+        <p
+          id="raceMessage"
+          class="game-message"
+        ></p>
 
       </div>
 
-      <!-- RANKING -->
+      <!-- ==========================================
+           RANKING DA CORRIDA
+      ========================================== -->
 
       <div class="ranking-card">
 
@@ -384,13 +641,17 @@
 
     </section>
 
-    <!-- RESULTADO -->
+    <!-- ==========================================
+         RESULTADO FINAL
+    ========================================== -->
 
     <section id="result" class="screen">
 
       <div class="result-card">
 
-        <div class="trophy">🏆</div>
+        <div class="trophy">
+          🏆
+        </div>
 
         <h2>CORRIDA FINALIZADA!</h2>
 
@@ -403,34 +664,63 @@
           🔄 JOGAR NOVAMENTE
         </button>
 
+        <div class="access-buttons">
+
+          <a
+            href="aluno.html"
+            class="access-btn student-btn"
+          >
+            📊 MEU DESEMPENHO
+          </a>
+
+          <a
+            href="index.html"
+            class="access-btn visitor-btn"
+          >
+            🏠 VOLTAR AO INÍCIO
+          </a>
+
+        </div>
+
       </div>
 
     </section>
 
   </main>
 
-  <!-- CONTAGEM REGRESSIVA -->
+  <!-- ==========================================
+       CONTAGEM REGRESSIVA
+  ========================================== -->
 
-  <div id="countdown" class="countdown hidden">
+  <div
+    id="countdown"
+    class="countdown hidden"
+  >
 
     <img
       src="logo-avancar.png"
       alt="Instituto Avançar"
     >
 
-    <div id="countdownNumber">3</div>
+    <div id="countdownNumber">
+      3
+    </div>
 
     <h2>PREPARE-SE PARA AVANÇAR! 🚀</h2>
 
   </div>
 
-  <!-- SUPABASE -->
+  <!-- ==========================================
+       SUPABASE
+  ========================================== -->
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
   <script src="supabase-config.js"></script>
 
-  <!-- JOGO -->
+  <!-- ==========================================
+       MOTOR DO JOGO
+  ========================================== -->
 
   <script src="script.js"></script>
 

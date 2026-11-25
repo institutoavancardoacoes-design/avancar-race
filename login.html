@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#166534">
+
+    <title>Login do Aluno | AVANÇAR RACE</title>
+
+    <link rel="stylesheet" href="login.css">
+
+</head>
+
+<body>
+
+    <main class="login-container">
+
+        <section class="login-card">
+
+            <div class="brand">
+
+                <img
+                    src="logo-avancar.png"
+                    alt="Instituto Avançar"
+                    class="logo"
+                >
+
+                <span class="institution">
+                    INSTITUTO AVANÇAR APRESENTA
+                </span>
+
+                <h1>AVANÇAR RACE</h1>
+
+                <span class="badge">
+                    PORTAL DO ALUNO
+                </span>
+
+            </div>
+
+            <div class="welcome">
+
+                <h2>Bem-vindo, competidor!</h2>
+
+                <p>
+                    Acesse sua conta, supere seus recordes
+                    e acompanhe sua evolução.
+                </p>
+
+            </div>
+
+            <form id="loginForm">
+
+                <!-- NOME DE USUÁRIO -->
+
+                <div class="input-group">
+
+                    <label for="usuario">
+                        Nome de usuário
+                    </label>
+
+                    <input
+                        type="text"
+                        id="usuario"
+                        name="usuario"
+                        placeholder="Digite seu nome de usuário"
+                        autocomplete="username"
+                        autocapitalize="none"
+                        spellcheck="false"
+                        minlength="3"
+                        maxlength="40"
+                        required
+                    >
+
+                    <small style="
+                        display: block;
+                        margin-top: 7px;
+                        font-size: 12px;
+                        color: #64748b;
+                    ">
+                        Utilize o usuário gerado no seu cadastro.
+                    </small>
+
+                </div>
+
+                <!-- SENHA -->
+
+                <div class="input-group">
+
+                    <label for="senha">
+                        Senha
+                    </label>
+
+                    <div class="password-container">
+
+                        <input
+                            type="password"
+                            id="senha"
+                            name="senha"
+                            placeholder="Digite sua senha"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="toggleSenha"
+                            class="toggle-password"
+                            aria-label="Mostrar senha"
+                        >
+                            👁
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- MENSAGENS -->
+
+                <div
+                    id="mensagem"
+                    class="mensagem"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+                <!-- BOTÃO DE LOGIN -->
+
+                <button
+                    type="submit"
+                    id="btnLogin"
+                    class="btn-login"
+                >
+                    ENTRAR NA MINHA CONTA
+                </button>
+
+            </form>
+
+            <!-- CRIAR CONTA -->
+
+            <div style="
+                text-align: center;
+                margin-top: 22px;
+            ">
+
+                <p style="
+                    font-size: 13px;
+                    color: #64748b;
+                    margin-bottom: 8px;
+                ">
+                    Ainda não possui uma conta?
+                </p>
+
+                <a href="cadastro.html" style="
+                    color: #15803d;
+                    font-weight: 700;
+                    text-decoration: none;
+                    font-size: 14px;
+                ">
+                    Criar minha conta
+                </a>
+
+            </div>
+
+            <!-- OUTRAS OPÇÕES -->
+
+            <div class="divider">
+
+                <span>OUTRAS OPÇÕES</span>
+
+            </div>
+
+            <div class="alternative-actions">
+
+                <a href="index.html" class="btn-secondary">
+                    🎮 Jogar como visitante
+                </a>
+
+                <a href="professor.html" class="btn-secondary">
+                    👨‍🏫 Acesso do professor
+                </a>
+
+            </div>
+
+            <!-- SUPORTE -->
+
+            <div class="help">
+
+                <p>Esqueceu seu usuário ou senha?</p>
+
+                <span>
+                    Solicite ajuda ao seu professor.
+                </span>
+
+            </div>
+
+            <!-- RODAPÉ -->
+
+            <footer>
+
+                <p>
+                    © <span id="anoAtual"></span>
+                    Instituto Avançar
+                </p>
+
+                <span>
+                    AVANÇAR RACE 6.0
+                </span>
+
+            </footer>
+
+        </section>
+
+    </main>
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabase-config.js"></script>
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#166534">
+
+    <title>Portal do Aluno | AVANÇAR RACE</title>
+
+    <link rel="stylesheet" href="aluno.css">
+
+</head>
+
+<body>
+
+    <!-- TELA DE CARREGAMENTO -->
+
+    <div id="loadingScreen" class="loading-screen">
+
+        <div class="spinner"></div>
+
+        <h2>AVANÇAR RACE</h2>
+
+        <p>Carregando seu desempenho...</p>
+
+    </div>
+
+    <!-- PAINEL PRINCIPAL -->
+
+    <div id="app" class="app" hidden>
+
+        <!-- MENU LATERAL -->
+
+        <aside class="sidebar" id="sidebar">
+
+            <div class="brand">
+
+                <img
+                    src="logo-avancar.png"
+                    alt="Instituto Avançar"
+                >
+
+                <h2>AVANÇAR RACE</h2>
+
+                <span>PORTAL DO ALUNO</span>
+
+            </div>
+
+            <nav class="menu">
+
+                <a href="#dashboard" class="menu-item active">
+                    🏠 Visão geral
+                </a>
+
+                <a href="index.html" class="menu-item">
+                    🎮 Jogar
+                </a>
+
+                <a href="#desempenho" class="menu-item">
+                    📊 Meu desempenho
+                </a>
+
+                <a href="#historico" class="menu-item">
+                    📋 Histórico de partidas
+                </a>
+
+                <a href="#ranking" class="menu-item">
+                    🏆 Ranking
+                </a>
+
+                <a href="#perfil" class="menu-item">
+                    👤 Meu perfil
+                </a>
+
+            </nav>
+
+            <div class="sidebar-footer">
+
+                <span>AVANÇAR RACE 6.0</span>
+
+                <button id="btnSair" class="btn-sair">
+                    🚪 Sair da conta
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+
+        <main class="main-content">
+
+            <!-- CABEÇALHO -->
+
+            <header class="topbar">
+
+                <button
+                    id="btnMenu"
+                    class="btn-menu"
+                    aria-label="Abrir menu"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+
+                <div>
+
+                    <h1>Portal do Aluno</h1>
+
+                    <p id="dataAtual"></p>
+
+                </div>
+
+                <div class="user-info">
+
+                    <div id="avatarAluno" class="avatar">
+                        A
+                    </div>
+
+                    <div>
+
+                        <strong id="nomeHeader">
+                            Aluno
+                        </strong>
+
+                        <span id="turmaHeader">
+                            Carregando...
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- BOAS-VINDAS -->
+
+            <section id="dashboard" class="welcome-banner">
+
+                <div class="welcome-text">
+
+                    <span class="welcome-label">
+                        SUA EVOLUÇÃO COMEÇA AQUI
+                    </span>
+
+                    <h2>
+                        Olá, <span id="nomeAluno">competidor</span>!
+                    </h2>
+
+                    <p>
+                        Treine, supere seus limites e alcance
+                        um novo nível de desempenho.
+                    </p>
+
+                    <a href="index.html" class="btn-jogar">
+                        🎮 JOGAR AGORA
+                    </a>
+
+                </div>
+
+                <div class="welcome-icon">
+                    🏆
+                </div>
+
+            </section>
+
+            <!-- INDICADORES -->
+
+            <section id="desempenho" class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Meu desempenho</h2>
+
+                        <p>
+                            Acompanhe seus resultados acumulados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="stats-grid">
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">⚡</div>
+
+                        <span>Velocidade média</span>
+
+                        <strong id="velocidadeMedia">0</strong>
+
+                        <small>Palavras por minuto</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">🚀</div>
+
+                        <span>Recorde pessoal</span>
+
+                        <strong id="recordeVelocidade">0</strong>
+
+                        <small>Palavras por minuto</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">🎯</div>
+
+                        <span>Precisão média</span>
+
+                        <strong id="precisaoMedia">0%</strong>
+
+                        <small>Precisão de digitação</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">🎮</div>
+
+                        <span>Partidas concluídas</span>
+
+                        <strong id="totalPartidas">0</strong>
+
+                        <small>Total acumulado</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">🏆</div>
+
+                        <span>Vitórias</span>
+
+                        <strong id="totalVitorias">0</strong>
+
+                        <small>Primeiros lugares</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">✅</div>
+
+                        <span>Total de acertos</span>
+
+                        <strong id="totalAcertos">0</strong>
+
+                        <small>Digitações corretas</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">❌</div>
+
+                        <span>Total de erros</span>
+
+                        <strong id="totalErros">0</strong>
+
+                        <small>Digitações incorretas</small>
+
+                    </article>
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon">⭐</div>
+
+                        <span>Pontuação acumulada</span>
+
+                        <strong id="pontuacaoTotal">0</strong>
+
+                        <small>Pontos conquistados</small>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- MODOS DE JOGO -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Escolha seu desafio</h2>
+
+                        <p>
+                            Desenvolva suas habilidades de digitação.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="modes-grid">
+
+                    <article class="mode-card classico">
+
+                        <div class="mode-icon">🐆</div>
+
+                        <span class="mode-badge">TREINAMENTO</span>
+
+                        <h3>Modo Clássico</h3>
+
+                        <p>
+                            Desenvolva sua velocidade e precisão.
+                        </p>
+
+                        <a href="index.html" class="btn-mode">
+                            ACESSAR JOGO
+                        </a>
+
+                    </article>
+
+                    <article class="mode-card competicao">
+
+                        <div class="mode-icon">🏆</div>
+
+                        <span class="mode-badge">COMPETITIVO</span>
+
+                        <h3>Modo Competição</h3>
+
+                        <p>
+                            Dispute posições contra outros jogadores.
+                        </p>
+
+                        <a href="index.html" class="btn-mode">
+                            ACESSAR JOGO
+                        </a>
+
+                    </article>
+
+                    <article class="mode-card profissional">
+
+                        <div class="mode-icon">🔥</div>
+
+                        <span class="mode-badge">AVANÇADO</span>
+
+                        <h3>Modo Profissional</h3>
+
+                        <p>
+                            Enfrente desafios e supere seus limites.
+                        </p>
+
+                        <a href="index.html" class="btn-mode">
+                            ACESSAR JOGO
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- GRÁFICOS -->
+
+            <section class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Evolução de desempenho</h2>
+
+                        <p>
+                            Compare seus resultados ao longo do tempo.
+                        </p>
+
+                    </div>
+
+                    <select id="filtroPeriodo">
+
+                        <option value="7">Últimos 7 dias</option>
+
+                        <option value="30">Últimos 30 dias</option>
+
+                        <option value="90">Últimos 90 dias</option>
+
+                        <option value="todos">Todo o período</option>
+
+                    </select>
+
+                </div>
+
+                <div class="charts-grid">
+
+                    <article class="chart-card">
+
+                        <h3>⚡ Evolução da velocidade</h3>
+
+                        <div class="chart-container">
+
+                            <canvas id="graficoVelocidade"></canvas>
+
+                        </div>
+
+                    </article>
+
+                    <article class="chart-card">
+
+                        <h3>🎯 Evolução da precisão</h3>
+
+                        <div class="chart-container">
+
+                            <canvas id="graficoPrecisao"></canvas>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </section>
+
+            <!-- HISTÓRICO -->
+
+            <section id="historico" class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Histórico de partidas</h2>
+
+                        <p>
+                            Consulte os resultados das suas corridas.
+                        </p>
+
+                    </div>
+
+                    <select id="filtroModo">
+
+                        <option value="todos">Todos os modos</option>
+
+                        <option value="classico">Clássico</option>
+
+                        <option value="competicao">Competição</option>
+
+                        <option value="profissional">Profissional</option>
+
+                    </select>
+
+                </div>
+
+                <div class="table-card">
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Data</th>
+
+                                    <th>Modo</th>
+
+                                    <th>Posição</th>
+
+                                    <th>PPM</th>
+
+                                    <th>CPM</th>
+
+                                    <th>Precisão</th>
+
+                                    <th>Acertos</th>
+
+                                    <th>Erros</th>
+
+                                    <th>Pontos</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="historicoBody">
+
+                                <tr>
+
+                                    <td colspan="9" class="empty-state">
+
+                                        Nenhuma partida registrada.
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- RANKING -->
+
+            <section id="ranking" class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>🏆 Ranking de desempenho</h2>
+
+                        <p>
+                            Acompanhe sua classificação.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="ranking-grid">
+
+                    <article class="ranking-card">
+
+                        <span>🌎 Ranking geral</span>
+
+                        <strong id="posicaoGeral">—</strong>
+
+                        <small>Classificação institucional</small>
+
+                    </article>
+
+                    <article class="ranking-card">
+
+                        <span>🎓 Ranking da turma</span>
+
+                        <strong id="posicaoTurma">—</strong>
+
+                        <small>Classificação entre colegas</small>
+
+                    </article>
+
+                </div>
+
+                <div class="table-card">
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Posição</th>
+
+                                    <th>Aluno</th>
+
+                                    <th>Turma</th>
+
+                                    <th>Velocidade</th>
+
+                                    <th>Precisão</th>
+
+                                    <th>Vitórias</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="rankingBody">
+
+                                <tr>
+
+                                    <td colspan="6" class="empty-state">
+
+                                        Ranking ainda indisponível.
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- PERFIL -->
+
+            <section id="perfil" class="section">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>Meu perfil</h2>
+
+                        <p>Informações da sua conta.</p>
+
+                    </div>
+
+                </div>
+
+                <div class="profile-card">
+
+                    <div class="profile-avatar" id="avatarPerfil">
+                        A
+                    </div>
+
+                    <div class="profile-grid">
+
+                        <div class="profile-field">
+
+                            <span>Nome completo</span>
+
+                            <strong id="perfilNome">—</strong>
+
+                        </div>
+
+                        <div class="profile-field">
+
+                            <span>Matrícula</span>
+
+                            <strong id="perfilMatricula">—</strong>
+
+                        </div>
+
+                        <div class="profile-field">
+
+                            <span>Turma</span>
+
+                            <strong id="perfilTurma">—</strong>
+
+                        </div>
+
+                        <div class="profile-field">
+
+                            <span>Status da conta</span>
+
+                            <strong id="perfilStatus">—</strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- RODAPÉ -->
+
+            <footer class="footer">
+
+                <p>
+                    © <span id="anoAtual"></span>
+                    Instituto Avançar.
+                    Todos os direitos reservados.
+                </p>
+
+                <span>AVANÇAR RACE 6.0</span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+    <!-- BIBLIOTECAS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    <script src="supabase-config.js"></script>
+
+    <script src="aluno.js"></script>
+
+</body>
+
+</html>

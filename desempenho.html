@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Painel de Desempenho | AVANÇAR RACE</title>
+
+    <link rel="stylesheet" href="desempenho.css">
+
+</head>
+
+<body>
+
+    <!-- MENU LATERAL -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+
+            <img src="logo-avancar.png"
+                 alt="Instituto Avançar">
+
+            <h2>AVANÇAR RACE</h2>
+
+            <span>PAINEL PEDAGÓGICO</span>
+
+        </div>
+
+        <div class="professor-info">
+
+            <div class="avatar">👨‍🏫</div>
+
+            <strong id="nomeProfessor">
+                Carregando...
+            </strong>
+
+            <small>Professor</small>
+
+        </div>
+
+        <nav class="menu">
+
+            <button class="menu-item active"
+                    data-section="dashboard">
+
+                📊 Visão geral
+
+            </button>
+
+            <button class="menu-item"
+                    data-section="alunos">
+
+                👥 Alunos
+
+                <span id="badgePendentes"
+                      class="badge">0</span>
+
+            </button>
+
+            <button class="menu-item"
+                    data-section="ranking">
+
+                🏆 Ranking geral
+
+            </button>
+
+            <button class="menu-item"
+                    data-section="historico">
+
+                📋 Histórico de partidas
+
+            </button>
+
+            <a href="professor.html"
+               class="menu-item">
+
+                🎮 Controle de corridas
+
+            </a>
+
+            <a href="index.html"
+               class="menu-item">
+
+                🏁 Voltar ao jogo
+
+            </a>
+
+        </nav>
+
+        <button id="btnSair" class="btn-sair">
+
+            🚪 Sair da conta
+
+        </button>
+
+        <div class="sidebar-footer">
+
+            AVANÇAR RACE 6.0
+
+        </div>
+
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <button id="btnMenu"
+                        class="btn-menu"
+                        aria-label="Abrir menu">
+
+                    ☰
+
+                </button>
+
+                <h1 id="tituloPagina">
+
+                    Visão geral
+
+                </h1>
+
+                <p>Instituto Avançar | Informática</p>
+
+            </div>
+
+            <button id="btnAtualizar"
+                    class="btn-primary">
+
+                ↻ Atualizar dados
+
+            </button>
+
+        </header>
+
+        <div id="mensagemGlobal"
+             role="status"
+             aria-live="polite"></div>
+
+        <!-- ======================================
+             DASHBOARD
+        ======================================= -->
+
+        <section id="dashboard"
+                 class="page-section active">
+
+            <div class="welcome-card">
+
+                <div>
+
+                    <span>AVANÇAR RACE 6.0</span>
+
+                    <h2>Desempenho dos alunos</h2>
+
+                    <p>
+                        Acompanhe a evolução das habilidades
+                        de digitação dos seus alunos.
+                    </p>
+
+                </div>
+
+                <div class="welcome-icon">🏆</div>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+
+                    <span>👥 Alunos ativos</span>
+
+                    <strong id="totalAlunos">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>⏳ Cadastros pendentes</span>
+
+                    <strong id="totalPendentes">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>🎮 Partidas concluídas</span>
+
+                    <strong id="totalPartidas">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>⚡ Velocidade média</span>
+
+                    <strong id="velocidadeMedia">0 PPM</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>🎯 Precisão média</span>
+
+                    <strong id="precisaoMedia">0%</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>🚀 Recorde de velocidade</span>
+
+                    <strong id="recordeVelocidade">0 PPM</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>✅ Total de acertos</span>
+
+                    <strong id="totalAcertos">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>❌ Total de erros</span>
+
+                    <strong id="totalErros">0</strong>
+
+                </article>
+
+            </div>
+
+            <!-- GRÁFICOS -->
+
+            <div class="charts-grid">
+
+                <article class="panel">
+
+                    <h3>Evolução da velocidade</h3>
+
+                    <div class="chart-container">
+
+                        <canvas id="graficoVelocidade"></canvas>
+
+                    </div>
+
+                </article>
+
+                <article class="panel">
+
+                    <h3>Evolução da precisão</h3>
+
+                    <div class="chart-container">
+
+                        <canvas id="graficoPrecisao"></canvas>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <!-- MELHORES ALUNOS -->
+
+            <article class="panel">
+
+                <h3>🏆 Destaques do ranking</h3>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Posição</th>
+
+                                <th>Aluno</th>
+
+                                <th>Velocidade média</th>
+
+                                <th>Precisão</th>
+
+                                <th>Partidas</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaDestaques"></tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- ======================================
+             GESTÃO DE ALUNOS
+        ======================================= -->
+
+        <section id="alunos" class="page-section">
+
+            <article class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>Gestão de alunos</h2>
+
+                        <p>
+                            Gerencie os cadastros e acompanhe
+                            o desempenho individual.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="filters">
+
+                    <input type="search"
+                           id="buscarAluno"
+                           aria-label="Buscar aluno"
+                           placeholder="Buscar nome ou matrícula">
+
+                    <select id="filtroStatus"
+                            aria-label="Filtrar situação">
+
+                        <option value="todos">Todos os alunos</option>
+
+                        <option value="aprovado">Aprovados</option>
+
+                        <option value="pendente">Pendentes</option>
+
+                        <option value="rejeitado">Rejeitados</option>
+
+                    </select>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Aluno</th>
+
+                                <th>Matrícula</th>
+
+                                <th>Cadastro</th>
+
+                                <th>Status</th>
+
+                                <th>Partidas</th>
+
+                                <th>Ações</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaAlunos"></tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- ======================================
+             RANKING PERMANENTE
+        ======================================= -->
+
+        <section id="ranking" class="page-section">
+
+            <article class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>🏆 Ranking geral</h2>
+
+                        <p>
+                            Classificação permanente dos alunos.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="filters">
+
+                    <input type="search"
+                           id="buscarRanking"
+                           aria-label="Buscar no ranking"
+                           placeholder="Buscar aluno">
+
+                    <select id="ordenarRanking"
+                            aria-label="Ordenar ranking">
+
+                        <option value="velocidade">
+                            Velocidade média
+                        </option>
+
+                        <option value="precisao">
+                            Precisão média
+                        </option>
+
+                        <option value="recorde">
+                            Recorde de velocidade
+                        </option>
+
+                        <option value="vitorias">
+                            Total de vitórias
+                        </option>
+
+                        <option value="pontuacao">
+                            Pontuação total
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Posição</th>
+
+                                <th>Aluno</th>
+
+                                <th>Velocidade</th>
+
+                                <th>Recorde</th>
+
+                                <th>Precisão</th>
+
+                                <th>Acertos</th>
+
+                                <th>Erros</th>
+
+                                <th>Partidas</th>
+
+                                <th>Vitórias</th>
+
+                                <th>Pontos</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaRanking"></tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- ======================================
+             HISTÓRICO DE PARTIDAS
+        ======================================= -->
+
+        <section id="historico" class="page-section">
+
+            <article class="panel">
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>Histórico de partidas</h2>
+
+                        <p>
+                            Consulte os resultados registrados.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="filters">
+
+                    <input type="search"
+                           id="buscarHistorico"
+                           aria-label="Buscar aluno no histórico"
+                           placeholder="Buscar aluno">
+
+                    <select id="filtroModo"
+                            aria-label="Modo de jogo">
+
+                        <option value="todos">Todos os modos</option>
+
+                        <option value="classico">Clássico</option>
+
+                        <option value="competicao">Competição</option>
+
+                        <option value="profissional">Profissional</option>
+
+                    </select>
+
+                    <select id="filtroPeriodo"
+                            aria-label="Período">
+
+                        <option value="todos">Todo o período</option>
+
+                        <option value="hoje">Hoje</option>
+
+                        <option value="7">Últimos 7 dias</option>
+
+                        <option value="30">Últimos 30 dias</option>
+
+                        <option value="90">Últimos 90 dias</option>
+
+                    </select>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Data</th>
+
+                                <th>Aluno</th>
+
+                                <th>Modo</th>
+
+                                <th>Velocidade</th>
+
+                                <th>Precisão</th>
+
+                                <th>Acertos</th>
+
+                                <th>Erros</th>
+
+                                <th>Tempo</th>
+
+                                <th>Posição</th>
+
+                                <th>Pontos</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaHistorico"></tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- ==========================================
+         MODAL DE DESEMPENHO INDIVIDUAL
+    =========================================== -->
+
+    <dialog id="modalAluno" class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="modalNome">Aluno</h2>
+
+                    <p id="modalMatricula"></p>
+
+                </div>
+
+                <button id="fecharModal"
+                        class="btn-fechar"
+                        aria-label="Fechar">
+
+                    ✕
+
+                </button>
+
+            </div>
+
+            <div class="stats-grid">
+
+                <article class="stat-card">
+
+                    <span>Partidas</span>
+
+                    <strong id="modalPartidas">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>Velocidade média</span>
+
+                    <strong id="modalVelocidade">0 PPM</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>Precisão média</span>
+
+                    <strong id="modalPrecisao">0%</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>Recorde</span>
+
+                    <strong id="modalRecorde">0 PPM</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>Acertos</span>
+
+                    <strong id="modalAcertos">0</strong>
+
+                </article>
+
+                <article class="stat-card">
+
+                    <span>Erros</span>
+
+                    <strong id="modalErros">0</strong>
+
+                </article>
+
+            </div>
+
+            <div class="charts-grid">
+
+                <article class="panel">
+
+                    <h3>Evolução da velocidade</h3>
+
+                    <div class="chart-container">
+
+                        <canvas id="graficoAlunoVelocidade"></canvas>
+
+                    </div>
+
+                </article>
+
+                <article class="panel">
+
+                    <h3>Evolução da precisão</h3>
+
+                    <div class="chart-container">
+
+                        <canvas id="graficoAlunoPrecisao"></canvas>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+            <article class="panel">
+
+                <h3>Histórico individual</h3>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Data</th>
+
+                                <th>Modo</th>
+
+                                <th>Velocidade</th>
+
+                                <th>Precisão</th>
+
+                                <th>Acertos</th>
+
+                                <th>Erros</th>
+
+                                <th>Posição</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tabelaHistoricoAluno"></tbody>
+
+                    </table>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </dialog>
+
+    <!-- BIBLIOTECAS -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
+    <script src="supabase-config.js"></script>
+
+    <script src="desempenho.js"></script>
+
+</body>
+
+</html>
