@@ -50,42 +50,66 @@ async function verificarProfessor() {
 
     try {
 
-        const { data, error } = await db.auth.getUser();
+        const {
+            data: { user: usuario },
+            error: erroUsuario
+        } = await db.auth.getUser();
 
-        const usuario = data?.user;
+        if (erroUsuario || !usuario || usuario.is_anonymous) {
 
-        if (error || !usuario || usuario.is_anonymous) {
-
-            window.location.replace("professor.html");
-
-            return false;
-
-        }
-
-        const { data: professor, error: erroProfessor } = await db
-            .from("professores")
-            .select("usuario_id, nome")
-            .eq("usuario_id", usuario.id)
-            .maybeSingle();
-
-        if (erroProfessor || !professor) {
-
-            window.location.replace("professor.html");
+            mostrarMensagem(
+                "Sessão inválida. Entre novamente como professor.",
+                "erro"
+            );
 
             return false;
 
         }
 
-        professorAtual = professor;
+        const {
+            data: autorizado,
+            error: erroPermissao
+        } = await db.rpc("eh_professor");
 
-        el("nomeProfessor").textContent = professor.nome;
+        if (erroPermissao) {
+
+            throw erroPermissao;
+
+        }
+
+        if (autorizado !== true) {
+
+            mostrarMensagem(
+                "Sua conta não possui permissão de professor.",
+                "erro"
+            );
+
+            return false;
+
+        }
+
+        professorAtual = {
+
+            usuario_id: usuario.id,
+
+            nome: usuario.user_metadata?.nome || "Professor"
+
+        };
+
+        el("nomeProfessor").textContent =
+            professorAtual.nome;
 
         return true;
 
     } catch (error) {
 
+        console.error(
+            "Erro ao verificar professor:",
+            error
+        );
+
         mostrarMensagem(
-            "Não foi possível verificar seu acesso.",
+            "Erro ao verificar acesso: " + error.message,
             "erro"
         );
 

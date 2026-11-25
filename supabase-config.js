@@ -36,7 +36,8 @@ const paginaAtual =
   window.location.pathname.split("/").pop().toLowerCase();
 
 const ambienteProfessor =
-  paginaAtual === "professor.html";
+  paginaAtual === "professor.html" ||
+  paginaAtual === "desempenho.html";
 
 // ==========================================
 // CONEXÃO E AUTENTICAÇÃO
