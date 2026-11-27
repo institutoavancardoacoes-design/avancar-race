@@ -70,6 +70,9 @@ function modoProfissionalAtivo() {
 
 let explodindo = false;
 let totalExplosoes = 0;
+let totalTrapacas = 0;
+const trapacasObservadas = new Map();
+let ultimasTrapacasEnviadas = -1;
 const explosoesObservadas = new Map();
 
 
@@ -437,7 +440,7 @@ async function loadPlayers() {
       .from("jogadores")
       .select(
         "id,nome,animal,progresso,precisao," +
-        "velocidade,erros,finalizou,tempo_final,explosoes"
+        "velocidade,erros,finalizou,tempo_final,explosoes,trapacas"
       )
       .eq("sala_id", roomId);
 
@@ -664,6 +667,9 @@ function prepareRace(startTimestamp) {
 
   raceStarted = true;
   totalExplosoes = 0;
+  totalTrapacas = 0;
+ultimasTrapacasEnviadas = -1;
+trapacasObservadas.clear();
 explodindo = false;
 
   raceActive = false;
@@ -1016,6 +1022,33 @@ function updateAllRunners() {
     const player = players.find(
       item => item.animal === animal.name
     );
+    // ==========================================
+// DETECTAR TRAPAÇAS DOS ADVERSÁRIOS
+// ==========================================
+
+if (player && player.id !== playerId) {
+
+    const atual = Number(player.trapacas || 0);
+
+    const anterior =
+        trapacasObservadas.get(player.id) ?? 0;
+
+    const runner = $(`runner-${index}`);
+
+    if (runner?.dataset.fogueteAtivo === "true") {
+        return;
+    }
+
+    trapacasObservadas.set(player.id, atual);
+
+    if (atual > anterior) {
+
+        fogueteMultiplayer(index).catch(console.error);
+
+        return;
+    }
+
+}
 if (
   modoProfissionalAtivo() &&
   player &&
@@ -1046,7 +1079,6 @@ if (
 }
 // Aguardar o término da explosão do próprio jogador
 if (
-    modoProfissionalAtivo() &&
     player?.id === playerId &&
     explodindo
 ) {
@@ -1055,14 +1087,10 @@ if (
     let progress =
       Number(player?.progresso || 0);
 
-    if (player?.id === playerId) {
+  if (player?.id === playerId) {
 
-  progress = modoProfissionalAtivo()
-    ? calculateProgress()
-    : Math.max(
-        progress,
-        calculateProgress()
-      );
+    progress = calculateProgress();
+
 }
 
     // Animar somente se a posição avançou.
@@ -1297,13 +1325,13 @@ async function sendProgress(completed = false) {
     const progress = calculateProgress();
 
     if (
-        progress === lastProgressSent &&
-        totalExplosoes === lastExplosionsSent &&
-        !completed
-    ) {
-        return true;
-    }
-
+    progress === lastProgressSent &&
+    totalExplosoes === lastExplosionsSent &&
+    totalTrapacas === ultimasTrapacasEnviadas &&
+    !completed
+) {
+    return true;
+}
     progressSyncRunning = true;
 
     try {
@@ -1336,6 +1364,7 @@ async function sendProgress(completed = false) {
             erros: errors,
 
             explosoes: totalExplosoes,
+            trapacas: totalTrapacas,
 
             pontuacao: modoCompeticaoAtivo()
                 ? pontosCompeticao
@@ -1405,6 +1434,7 @@ async function sendProgress(completed = false) {
                 lastProgressSent = payload.progresso;
 
                 lastExplosionsSent = payload.explosoes;
+                ultimasTrapacasEnviadas = payload.trapacas;
 
                 lastSyncTime = Date.now();
 
@@ -1558,10 +1588,76 @@ function explodirJogador() {
 // ==========================================
 // DIGITAÇÃO
 // ==========================================
+// ==========================================
+// AVANÇAR RACE 6.1
+// SISTEMA ANTITRAPAÇA
+// ==========================================
 
+function detectarTrapaca(event) {
+
+  event.preventDefault();
+
+  if (!raceActive || finished || explodindo) return;
+
+  console.warn("🚨 TENTATIVA DE TRAPAÇA DETECTADA!");
+
+  $("typingStatus").textContent =
+    "🚨 TRAPAÇA DETECTADA!";
+
+  dispararFogueteAvancar();
+}
+$("textDisplay").addEventListener(
+    "dragstart",
+    detectarTrapaca
+);
+// Bloquear cópia do texto
+
+$("textDisplay").addEventListener(
+  "copy",
+  detectarTrapaca
+);
+
+// Bloquear recorte do texto
+
+$("textDisplay").addEventListener(
+  "cut",
+  detectarTrapaca
+);
+
+// Bloquear colagem
+
+$("typingInput").addEventListener(
+  "paste",
+  detectarTrapaca
+);
+
+// Bloquear texto arrastado
+
+$("typingInput").addEventListener(
+  "drop",
+  detectarTrapaca
+);
+
+// Proteção adicional contra colagem
+
+$("typingInput").addEventListener(
+  "beforeinput",
+  event => {
+
+    if (
+      event.inputType === "insertFromPaste" ||
+      event.inputType === "insertFromDrop"
+    ) {
+
+      detectarTrapaca(event);
+
+    }
+
+  }
+);
 $("typingInput").addEventListener("input", event => {
 
-  if (!raceActive || finished) {
+ if (!raceActive || finished || explodindo) {
 
     event.target.value = typedText;
     return;
@@ -2308,3 +2404,332 @@ async function identificarAlunoAutomaticamente() {
 }
 
 identificarAlunoAutomaticamente();
+// ==========================================
+// AVANÇAR RACE 6.1
+// FOGUETE ANTITRAPAÇA
+// ==========================================
+
+async function dispararFogueteAvancar() {
+
+    if (explodindo || finished || !raceActive) return;
+
+    explodindo = true;
+totalTrapacas++;
+
+    const input = $("typingInput");
+    const runner = $(`runner-${selectedAnimalIndex}`);
+    const race = $("race");
+
+    input.disabled = true;
+
+    clearTimeout(progressSyncTimer);
+    progressSyncTimer = null;
+
+    // AVISO DE TRAPAÇA
+
+    const aviso = document.createElement("div");
+
+    aviso.className = "aviso-antitrapaca";
+
+    aviso.textContent =
+        "🚨 TRAPAÇA DETECTADA! FOGUETE LANÇADO!";
+
+    document.body.appendChild(aviso);
+
+    // CRIAR FOGUETE
+
+    if (runner) {
+
+        runner.scrollIntoView({
+            block: "center",
+            behavior: "instant"
+        });
+
+        const posicao = runner.getBoundingClientRect();
+
+        const alvoX = posicao.left + posicao.width / 2;
+        const alvoY = posicao.top + posicao.height / 2;
+
+        const inicioX = window.innerWidth + 150;
+        const inicioY = 30;
+
+        const angulo = Math.atan2(
+            alvoY - inicioY,
+            alvoX - inicioX
+        ) * 180 / Math.PI;
+
+        const foguete = document.createElement("div");
+
+        foguete.className = "foguete-antitrapaca";
+
+        foguete.innerHTML = `
+            <div class="foguete-chama"></div>
+<div class="foguete-corpo">
+    <span class="foguete-nome">AVANÇAR</span>
+</div>
+        `;
+
+        foguete.style.left = `${inicioX}px`;
+        foguete.style.top = `${inicioY}px`;
+
+        foguete.style.transform =
+            `translate(-50%, -50%) rotate(${angulo}deg)`;
+
+        document.body.appendChild(foguete);
+
+        // ANIMAÇÃO DO VOO
+
+        const voo = foguete.animate(
+            [
+                {
+                    left: `${inicioX}px`,
+                    top: `${inicioY}px`
+                },
+                {
+                    left: `${alvoX}px`,
+                    top: `${alvoY}px`
+                }
+            ],
+            {
+                duration: 1200,
+                easing: "ease-in",
+                fill: "forwards"
+            }
+        );
+
+        await voo.finished;
+
+        foguete.remove();
+
+        // EXPLOSÃO
+
+        const explosao = document.createElement("div");
+
+        explosao.className = "explosao-antitrapaca";
+
+        explosao.textContent = "💥";
+
+        explosao.style.left = `${alvoX}px`;
+        explosao.style.top = `${alvoY}px`;
+
+        document.body.appendChild(explosao);
+
+        runner.style.visibility = "hidden";
+
+        race.classList.add("tremor-antitrapaca");
+
+        await new Promise(
+            resolve => setTimeout(resolve, 800)
+        );
+
+        explosao.remove();
+
+        race.classList.remove("tremor-antitrapaca");
+
+        runner.style.visibility = "visible";
+
+    }
+
+    // ZERAR O PROGRESSO DO INFRATOR
+
+    typedText = "";
+    correctChars = 0;
+    errors = 0;
+    totalTyped = 0;
+
+    input.value = "";
+
+    // ZERAR PONTUAÇÃO E COMBOS
+
+    comboAtual = 0;
+    pontosCompeticao = 0;
+    energiaTurbo = 0;
+    maiorPosicaoPontuada = 0;
+
+    atualizarPainelCompeticao();
+
+    // RETORNAR À LARGADA
+
+    if (runner) {
+
+        runner.style.transition = "none";
+
+        moveRunner(selectedAnimalIndex, 0, false);
+
+        void runner.offsetWidth;
+
+        runner.style.transition = "left 450ms linear";
+
+    }
+
+    // ATUALIZAR ESTATÍSTICAS
+
+    updateStats();
+
+    // SINCRONIZAR PROGRESSO
+
+   // Cancelar sincronizações agendadas
+clearTimeout(progressSyncTimer);
+progressSyncTimer = null;
+progressSyncPending = false;
+
+// Aguardar sincronização anterior
+while (progressSyncRunning) {
+    await new Promise(
+        resolve => setTimeout(resolve, 50)
+    );
+}
+
+// Forçar o registro da punição
+lastProgressSent = -1;
+ultimasTrapacasEnviadas = -1;
+
+let punicaoRegistrada = false;
+
+for (let tentativa = 1; tentativa <= 3; tentativa++) {
+
+    punicaoRegistrada = await sendProgress(false);
+
+    if (punicaoRegistrada) break;
+
+    await new Promise(
+        resolve => setTimeout(resolve, 500)
+    );
+}
+
+if (!punicaoRegistrada) {
+
+    showMessage(
+        "raceMessage",
+        "⚠️ Falha ao sincronizar a punição."
+    );
+
+    scheduleProgressSync();
+}
+
+    aviso.textContent =
+        "💥 VOLTE AO INÍCIO! DIGITE SEM TRAPACEAR!";
+
+    setTimeout(() => aviso.remove(), 2500);
+
+    explodindo = false;
+
+    if (raceActive && !finished) {
+
+        input.disabled = false;
+
+        input.focus();
+
+        $("typingStatus").textContent =
+            "🚀 NOVA CHANCE! DIGITE CORRETAMENTE!";
+
+    }
+
+}
+// ==========================================
+// FOGUETE ANTITRAPAÇA MULTIPLAYER
+// ==========================================
+
+async function fogueteMultiplayer(index) {
+
+    const runner = $(`runner-${index}`);
+
+    if (!runner) return;
+
+    if (runner.dataset.fogueteAtivo === "true") return;
+
+    runner.dataset.fogueteAtivo = "true";
+
+    const posicao = runner.getBoundingClientRect();
+
+    const alvoX = posicao.left + posicao.width / 2;
+    const alvoY = posicao.top + posicao.height / 2;
+
+    const inicioX = window.innerWidth + 150;
+    const inicioY = 30;
+
+    const angulo = Math.atan2(
+        alvoY - inicioY,
+        alvoX - inicioX
+    ) * 180 / Math.PI;
+
+    const foguete = document.createElement("div");
+
+    foguete.className = "foguete-antitrapaca";
+
+    foguete.innerHTML = `
+        <div class="foguete-chama"></div>
+       <div class="foguete-corpo">
+    <span class="foguete-nome">AVANÇAR</span>
+</div>
+    `;
+
+    foguete.style.left = `${inicioX}px`;
+    foguete.style.top = `${inicioY}px`;
+
+    foguete.style.transform =
+        `translate(-50%, -50%) rotate(${angulo}deg)`;
+
+    document.body.appendChild(foguete);
+
+    try {
+
+        await foguete.animate(
+            [
+                {
+                    left: `${inicioX}px`,
+                    top: `${inicioY}px`
+                },
+                {
+                    left: `${alvoX}px`,
+                    top: `${alvoY}px`
+                }
+            ],
+            {
+                duration: 1200,
+                easing: "ease-in",
+                fill: "forwards"
+            }
+        ).finished;
+
+        foguete.remove();
+
+        const explosao = document.createElement("div");
+
+        explosao.className = "explosao-antitrapaca";
+        explosao.textContent = "💥";
+
+        explosao.style.left = `${alvoX}px`;
+        explosao.style.top = `${alvoY}px`;
+
+        document.body.appendChild(explosao);
+
+        runner.style.visibility = "hidden";
+
+        await new Promise(
+            resolve => setTimeout(resolve, 800)
+        );
+
+        explosao.remove();
+
+        runner.style.transition = "none";
+
+        moveRunner(index, 0, false);
+
+        void runner.offsetWidth;
+
+        runner.style.transition = "left 450ms linear";
+
+    } finally {
+
+        foguete.remove();
+
+        runner.style.visibility = "visible";
+
+        runner.dataset.fogueteAtivo = "false";
+
+        updateAllRunners();
+
+    }
+
+}
